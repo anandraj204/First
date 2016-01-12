@@ -1,0 +1,251 @@
+﻿@{
+    ViewBag.Title = "My account";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+<div class="container-fluid" id="MyAccountCtrl" ng-controller="MyAccountCtrl">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 account-area">
+            <ul class="account-tabs">
+                <li class="active"><a data-toggle="tab" href="#basicInfo">Basic Info / Address info</a></li>
+                <li><a data-toggle="tab" href="#stateIdVerificationDocuments">State ID / Verification Documents</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div id="basicInfo" class="tab-pane fade in active">
+                    <div class="clearfix">
+                        <div class="col-md-6">
+                            <form name="updateform" class="form form-horizontal" ng-submit="update(updateform, updateform.$valid)" novalidate>
+                                <h4>Basic info</h4>
+                                <div class="clearfix">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <alert ng-repeat="alert in alerts" type="danger" close="closeAlert($index)">{{alert.msg}}</alert>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="Email">Email</label>
+                                        <div class="col-sm-9">
+                                            <div class="btn-right-area">
+                                                <input type="text" value="{{username}}" aria-required ng-model="username" ng-required="true" class="form-control" placeholder="jane@example.com" id="Email" name="Email" />
+                                            </div>
+                                            <span ng-switch on="emailConfirmed" class="pull-right">
+                                                <span ng-switch-when="false" style="color: red">
+                                                    <span class="fa fa-times not-verified-icon" title="Not verified"></span>
+                                                    <a href="#" ng-click="sendMailVerification()" class="btn btn-success btn-small">Verify</a>
+                                                </span>
+                                                <span ng-switch-when="true" title="Verified" class="fa fa-check verified-icon"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="firstName">First name</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{firstName}}" ng-model="firstName" class="form-control" placeholder="First name" id="firstName" name="firstName" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="lastName">Last name</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{lastName}}" ng-model="lastName" class="form-control" placeholder="Last name" id="lastName" name="firstName" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="zipcode">Zip code</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{zipcode}}" ng-model="zipcode" class="form-control" placeholder="Zip code" id="zipcode" name="zipcode" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="phoneNumber">Phone number</label>
+                                        <div class="col-sm-9">
+                                            <div class="btn-right-area">
+                                                <input type="text" value="{{phoneNumber}}" ng-model="phoneNumber" class="form-control" placeholder="phone number" id="phoneNumber" name="phoneNumber" />
+                                                <span class="text-danger error">{{phoneNumberError}}</span>
+                                            </div>
+                                            <span ng-switch on="phoneNumberConfirmed" class="pull-right">
+                                                <span ng-switch-when="false">
+                                                    <span class="fa fa-times not-verified-icon" title="Not verified"></span>
+                                                    <a href="#" ng-click="sendCode()" class="btn btn-success  btn-small">Verify</a>
+                                                </span>
+                                                <span ng-switch-when="true" title="Verified" class="fa fa-check verified-icon"></span>
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="birthday">Date of birth</label>
+                                        <div class="col-sm-9">
+                                            <input type="date" value="{{birthday}}" ng-model="birthday" class="form-control" placeholder="yyyy-MM-dd" id="birthday" name="birthday" />
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <input type="submit" class="btn btn-success" value="Save" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form name="updateaddressInfo" class="form form-horizontal" ng-submit="updateAddressInfo(updateaddressInfo, updateaddressInfo.$valid)" novalidate>
+                                <h4>Address Info</h4>
+                                <div class="clearfix">
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="addressLine1">Address Line</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{addressLine1}}" ng-model="addressLine1" class="form-control" placeholder="Address line 1" id="addressLine1" name="addressLine1" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="unitNo">Unit #</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{unitNo}}" ng-model="unitNo" class="form-control" placeholder="Unit #" id="unitNo" name="unitNo" />
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="city">City</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{city}}" ng-model="city" class="form-control" placeholder="City" id="city" name="city" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="state">State</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{state}}" ng-model="state" class="form-control" placeholder="State" id="state" name="state" />
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <input type="submit" class="btn btn-success" value="Save" />
+                                    </div>
+                                </div>
+                            </form>
+                            <form name="updatepasswordform" class="form form-horizontal" ng-submit="changePassword(updatepasswordform, updatepasswordform.$valid)" novalidate>
+                                <div class="clearfix">
+                                    <h4>Change Password</h4>
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <alert ng-repeat="alert in passwordAlerts" type="danger">{{alert.msg}}</alert>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="oldPassword">Old Password</label>
+                                        <div class="col-sm-9">
+                                            <input type="password" value="{{oldPassword}}" ng-model="oldPassword" class="form-control" placeholder="Old password" id="oldPassword" name="oldPassword" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="phoneNumber">New Password</label>
+                                        <div class="col-sm-9">
+                                            <input type="password" value="{{newPassword}}" ng-model="newPassword" class="form-control" placeholder="New Password" id="newPassword" name="newPassword" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="confirmPassword">Confirm Password</label>
+                                        <div class="col-sm-9">
+                                            <input type="password" value="{{confirmPassword}}" ng-model="confirmPassword" class="form-control" placeholder="Confirm Password" id="confirmPassword" name="confirmPassword" />
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <input type="submit" class="btn btn-success" value="Save" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div id="stateIdVerificationDocuments" class="tab-pane fade">
+                    <div class="clearfix">
+                        <div class="col-md-6">
+                            <form name="updatestateinfoform" class="form form-horizontal" ng-submit="updateStateInfo(updatestateinfoform, updatestateinfoform.$valid)" novalidate>
+                                <h4>State ID</h4>
+                                <div class="clearfix">
+                                    <div class="col-md-offset-2 col-md-10">
+                                        <alert ng-repeat="alert in passwordAlerts" type="danger">{{alert.msg}}</alert>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="idNumber">ID #</label>
+                                        <div class="col-sm-9">
+                                            <input type="text" value="{{idNumber}}" ng-model="idNumber" class="form-control" placeholder="ID number" id="idNumber" name="idNumber" />
+                                        </div>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="col-sm-3 control-label" for="experationDate">Expiration Date</label>
+                                        <div class="col-sm-9">
+                                            <input type="date" value="{{experationDate}}" ng-model="experationDate" class="form-control" placeholder="yyyy-MM-dd" id="experationDate" name="experationDate" />
+                                        </div>
+                                    </div>
+
+                                    <div class="text-right">
+                                        <input type="submit" class="btn btn-success" value="Save" style="width: 100px" />
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                        <div class="col-md-6">
+                            <form name="documentsform" class="form form-horizontal" novalidate>
+                                <h4>Verification documents</h4>
+                                <div class="clearfix text-center">
+                                    <div class="well">
+
+                                        <label class="govt-id-label" for="GovernmentId">Government Issued Photo ID</label>
+                                        <div name="GovernmentId" class="btn btn-primary btn-sm" ng-model="idupload" ngf-select="UploadId($file)">Select Photo</div>
+
+                                        <input name="photoid" type="hidden" ng-model="driversLicenseImageUrl" ng-required="true" />
+                                        <p ng-if="form.$submitted && form.photoid.$error.required" class="text-danger">You must upload a Government Issued Photo ID</p>
+
+                                        <div class="upload-img text-center">
+                                            <img class="img-responsive" style="padding-top:10px;padding-bottom:10px;" ng-src="{{driversLicenseImageUrl}}" />
+                                        </div>
+
+                                        <alert class="alert-success text-center" ng-if="user.patientInfo.driversLicenseImageUrl != null && user.patientInfo.driversLicenseImageUrl != ''">Photo ID Upload Successful!</alert>
+                                    </div>
+
+                                    <div class="well med-card">
+                                        <div style="text-align:left;">
+                                            <div class="toggle-area">
+                                                <label for="chk1" class="label">Medical Marijuana Card</label>
+                                                <input id="chk1" type="checkbox" class="tgl tgl-light" />
+                                                <label class="tgl-btn" for="chk1"></label>
+                                                <label for="chk1" class="label">Doctor Recommendation</label>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label for="MmjRxImg" class="">Valid Rx or MMJ license/card</label>
+                                            <div name="GovernmentId" name="MmjRxImg" class="btn btn-primary btn-sm" ng-model="rxupload" ngf-select="UploadRx($file)">Select Card</div>
+                                            <input name="recommendation" type="hidden" ng-model="recommendationImageUrl" ng-required="true" />
+                                        </div>
+
+
+
+                                        <p ng-if="form.$submitted && form.recommendation.$error.required" class="text-danger">You must upload a recommendation.</p>
+
+                                        <div class="upload-img text-center">
+                                            <!-- <img class="img-responsive" ngf-src="rxupload">-->
+
+                                            <img class="img-responsive" style="padding-top:10px;padding-bottom:10px;" ng-src="{{recommendationImageUrl}}" />
+                                        </div>
+
+                                        <alert class="alert-success text-center" ng-if="user.patientInfo.recommendationImageUrl != null && user.patientInfo.recommendationImageUrl != ''">Medical Rx Upload Completed!</alert>
+                                    </div>
+                                </div>
+
+                                <div class="text-right">
+                                    <button type="submit" value="" class="btn btn-success" name="userInfoSave" id="userInfoSave" ng-click="updateDocumentsInfo()">Save</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

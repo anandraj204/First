@@ -1,0 +1,159 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Jane - Cart";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+<link href="~/Areas/Checkout/Content/cart.css" rel="stylesheet" />
+<script type="text/javascript" src='https://checkout.stripe.com/checkout.js'></script>
+
+
+<div class="image-wrapper">
+    <div class="background-menu-image"></div>
+    <div class="container-fluid" ng-controller="CartCtrl">
+        <form name="form" class="form" ng-submit="Checkout(form, form.$valid)" novalidate>
+            <alert type="success" ng-if="user.patientInfo.approvalStatus == 2">
+                Congratulations. Your application is currently in review. You will be able to complete your order once the application is accepted.
+            </alert>
+            <alert type="danger" ng-if="user.patientInfo.approvalStatus == 3">
+                Patient verification was rejected.  Update and <a href="/patient/applyv2">resubmit your verification here</a> or Contact admin@askmjane.com for more details.
+            </alert>
+            <alert class="text-center" type="info" ng-if="user.patientInfo.approvalStatus == 1">
+                Easy 2-Step verification process. Apply now and get your first delivery in minutes!
+                <a href="/patient/applyv2">Get Verified</a>
+            </alert>
+
+            <alert type="danger" ng-if="MultipleDispensaries">
+                <b> Orders cannot be from more than one dispensary or vendor.  Please remove products to ensure you are only ordering from a single dispensary or vendor.</b>
+            </alert>
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="row-item text-center">
+                        <h2 class="hidden-xs">Address</h2>
+                        <div class="form-group">
+                            <div class="toggle-area">
+                                <label for="chk1" class="label">Immediate Delivery</label>
+                                <input id="chk1" type="checkbox" class="tgl tgl-light" ng-model="expressDelivery" ng-click="SelectDeliveryType()" />
+                                <label class="tgl-btn" for="chk1"></label>
+                                <label for="chk1" class="label">Express Lane Pickup</label>
+                            </div>
+                        </div>
+                        <div ng-show="SelectedDeliveryType.Id == 2">
+                            <div class="row">
+                                <div class="form-group col-xs-12">
+                                    <p>
+                                        Pickup From {{CurrentDispensary.name}}<br />{{CurrentDispensary.address.formattedAddress}}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div ng-show="SelectedDeliveryType.Id == 1">
+                            <div class="row">
+                                <div class="col-sm-8 col-sm-offset-2">
+                                    <div class="form-group">
+                                        <input type="text" value="" ng-model="GoogleAddress" class="form-control" placeholder="Enter your address" name="DeliveryAddress" id="DeliveryAddress" />
+                                        <p ng-if="form.$submitted && form.DeliveryAddress.$error.required" class="text-danger">Delivery Address is required.</p>
+                                        <p ng-if="showInvalidAddress && invalidDeliveryAddress || (form.$submitted && invalidDeliveryAddress)" class="text-danger">Delivery Address is not valid.</p>
+                                    </div>
+                                    <div class="form-group">
+                                        <input type="text" value="" ng-model="user.DeliveryAddress.Address2" class="form-control" placeholder="Special instructions (Apartment, Unit #, etc)" name="DeliveryAddress2" id="DeliveryAddress2" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="row-item text-center">
+                        <h2>Payment</h2>
+                        <div class="form-group">
+                            <div class="toggle-area">
+                                <label for="chk2" class="label">Credit/Debit</label>
+                                <input id="chk2" type="checkbox" class="tgl tgl-light" ng-model="cashPayment" ng-click="SelectPaymentType()" />
+                                <label class="tgl-btn" for="chk2"></label>
+                                <label for="chk2" class="label">Cash</label>
+                            </div>
+                        </div>
+                        <div ng-if="SelectedPaymentType.Id == 2">
+                            <div class="form-group text-left">
+                                <p>You can checkout using your card</p>
+                            </div>
+                        </div>
+                        <div ng-if="SelectedPaymentType.Id == 1">
+                            <div class="form-group text-left">
+                                Cash payment required on delivery or pickup.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row cart-wrapper">
+                <div class="clearfix button-wrapper">
+                    <a class="btn btn-primary" href="/menu"><span class="fa fa-long-arrow-left"></span>Back to shopping</a>
+                </div>
+                <table class="table-cart">
+                    <tbody>
+                        <tr ng-repeat="item in cart.dispensaryProductVariantOrders" class="cart-item">
+                            <td class="hidden-xs">
+                                <span class="btn btn-success" ng-click="UpdateQuantity(item)">Update</span>
+                            </td>
+                            <td class="name">
+                                <b class="value"><input class="form-control" type="number" ng-model="item.quantity" /> x <span>{{item.dispensaryProductVariant.name}}</span></b>
+                            </td>
+                            <td class="name">
+                                <b>{{item.dispensaryProductVariant.dispensaryProduct.dispensary.slug}}</b>
+                            </td>
+                            <td>
+                                {{item.weight}} <span ng-if="item.isPricedByWeight"> grams</span><span ng-if="!item.isPricedByWeight"> pack</span>
+                            </td>
+                            <td>
+                                <b>${{item.totalPrice}}</b>
+                            </td>
+                            <td class="remove">
+                                <a ng-click="RemoveItem(item)"><span class="fa fa-times"></span></a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="cart-summary col-sm-6 col-sm-offset-6">
+                        <div class="clearfix">
+                            <div class="col-sm-8 col-xs-8">
+                                Regular Cost:
+                            </div>
+                            <div class="col-sm-4 col-xs-4">
+                                ${{RegularPrice | number:2}}
+                            </div>
+                            <div class="col-sm-8 col-xs-8">
+                                Discount:
+                            </div>
+                            <div class="col-sm-4 col-xs-4">
+                                ${{Discount| number:2}}
+                            </div>
+                            <div class="col-sm-8 col-xs-8" ng-class="{'disabled': !useCredits}">
+                                Jane Credits (${{user.wallet.credit | number:2}}):
+                                <div class="toggle-area small-size">
+                                    <input id="creditsCheck" type="checkbox" class="tgl tgl-light" ng-model="useCredits" ng-change="RecalcTotal()">
+                                    <label class="tgl-btn on-off-switcher" for="creditsCheck"></label>
+                                </div>
+                            </div>
+                            <div class="col-sm-4 col-xs-4" ng-class="{'disabled': !useCredits}">
+                                ${{payFromCredit | number:2}}
+                            </div>
+                            <div class="col-sm-8 col-xs-8">
+                                <b>Total Price:</b>
+                            </div>
+                            <div class="col-sm-4 col-xs-4">
+                                <b>${{TotalPrice | number:2}}</b>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="button-wrapper text-right">
+                    <button type="submit" name="submit" ng-disabled="!CanCheckout" class="btn btn-primary btn-lg">Checkout</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

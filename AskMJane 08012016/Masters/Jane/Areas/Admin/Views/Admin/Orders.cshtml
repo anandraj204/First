@@ -1,0 +1,130 @@
+﻿@{
+    ViewBag.Title = "Jane - Orders";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Order Manager</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content" id="AdminOrderCtrl" ng-controller="AdminOrderCtrl">
+    <div class="ibox">
+        <div class="ibox-content">
+            <h4>
+                Now viewing orders for
+                <select name="DispensarySelect" ng-model="model.CurrentDispensary" ng-change="updateCurrentDispensary()"
+                        ng-options="opt.id as opt.name for opt in dispensaries">
+                    <option value="">All</option>
+                </select>
+
+                Market
+                <select name="MarketSelect" ng-model="model.CurrentMarket" ng-change="updateCurrentMarket()"
+                        ng-options="market for market in markets">
+                    <option value="">All</option>
+                </select>
+            </h4>
+            <div ng-show="orders.length == 0 && !loading">
+                There are orders found
+            </div>
+            <table class="table table-striped table-bordered table-hover" ng-hide="orders.length == 0 || loading">
+                <thead>
+                    <tr>
+                        <th>Order #</th>
+                        <th><a href="#" ng-click="order('user.firstName')">Patient Name</a></th>
+                        <th><a href="#" ng-click="order('dispensary.name')">Dispensary</a></th>
+                        <th><a href="#" ng-click="order('deliveryTypeName')">DeliveryType</a></th>
+                        <th><a href="#" ng-click="order('totalPrice')">Total</a></th>
+                        <th><a href="#" ng-click="order('checkedOutAt')">Order Date</a></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="o in orders  | orderBy:predicate:reverse">
+                        <td>{{o.id}}</td>
+                        <td>{{o.user.firstName}} {{o.user.lastName}}</td>
+                        <td>{{o.dispensary.name}}</td>
+                        <td>{{o.deliveryTypeName}}</td>
+                        <td>${{o.totalPrice}}</td>
+                        <td>
+                            {{o.checkedOutAt| date:'yyyy-MM-dd hh:mm'}}
+                        </td>
+                        <td class="text-right">
+                            <button class="btn btn-info" ng-click="openMoreInfoModal(o)">More Info</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+                    
+        </div>
+    </div>
+    <script type="text/ng-template" id="orderInfoModal.html">
+        <div class="">
+            <div class="modal-header">
+                <h3 class="modal-title">Order #{{o.id}}</h3>
+            </div>
+            <div class="modal-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <dl class="description-list">
+                            <dt>Patient Name</dt>
+                            <dd>{{o.user.firstName}} {{o.user.lastName}}</dd>
+                            <dt>Patient Phone Number</dt>
+                            <dd>{{o.user.phoneNumber}}</dd>
+                            <dt>Patient Email</dt>
+                            <dd>{{o.user.email}}</dd>
+                        </dl>
+                        <dl class="description-list" ng-show="o.deliveryAddress != null">
+                            <dt>Delivery Address</dt>
+                            <dd>{{o.deliveryAddress.formattedAddress}}</dd>
+                            <dt>Tracking Url</dt>
+                            <dd><a href="{{o.onfleetTrackingURL}}">Tracking URL</a></dd>
+                            <dt>Onfleet Task Id</dt>
+                            <dd>{{o.onfleetTaskId}}</dd>
+                            <dt>Onfleet Recipient Id</dt>
+                            <dd>{{o.onfleetRecipientId}}</dd>
+                        </dl>
+                    </div>
+                    <div class="col-md-6">
+                        <dl class="description-list">
+                            <dt class="no-after">Order #</dt>
+                            <dd>{{o.id}}</dd>
+                            <dt>Order Total</dt>
+                            <dd>${{o.totalPrice}}</dd>
+                            <dt>Order Type</dt>
+                            <dd>{{o.deliveryType}}</dd>
+                            <dt>Payment Type</dt>
+                            <dd>{{o.paymentType}}</dd>
+                            <dt>Order Date</dt>
+                            <dd>{{o.checkedOutAt | date:'yyyy-MM-dd hh:mm'}}</dd>
+                        </dl>
+                    </div>
+                </div>
+
+                <table class="table table-stripped no-margin">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Size</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="v in o.dispensaryProductVariantOrders">
+                            <td>{{v.dispensaryProductVariant.name}}</td>
+                            <td>{{v.displayQuantity}}</td>
+                            <td>${{v.unitPrice}}</td>
+                            <td>${{v.totalPrice}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" ng-click="cancel()">Close</button>
+            </div>
+        </div>
+    </script>
+    <div ng-show="loading" class="loader">
+        <img src="/Content/images/loader.gif">
+    </div>
+</div>

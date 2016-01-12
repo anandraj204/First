@@ -1,0 +1,562 @@
+﻿@using Newtonsoft.Json
+@model List<Jane.Core.Models.DispensaryModel>
+@{
+    ViewBag.Title = "Super Admin Dispensary Manager";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Dispensaries</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div id="DispensaryCtrl" ng-controller="DispensaryCtrl" class="ibox">
+        <div class="ibox-content dataTables_wrapper">
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary" type="button" ng-click="addNewDispensary()">Add Dispensary</button>
+                </div>
+            </div>
+            <table id="dispensaryGrid" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Name
+                            <input type="text" value="" class="form-control small-size" ng-model="model.filterName" name="DispensaryNameFilter" ng-change="updateDispensaries()" />
+                        </th>
+                        <th>
+                            State
+                            <select class="form-control small-size" name="FilterState" id="FilterState" ng-model="model.filterState"
+                                    ng-options="opt.value as opt.name for opt in states" ng-change="updateDispensaries()">
+                                <option value=""></option>
+                            </select>
+                        </th>
+                        <th>Type</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="createDispensary.html">
+    <div class="panel-body">
+        <h3>Add a new Dispensary</h3>
+        <form name="form" class="form panel-body clearfix" ng-submit="addDispensary(form, form.$valid)" novalidate>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="type">Name</label>
+                    <input type="text" value="" class="form-control" ng-required="true" ng-change="dispensary.Slug=dispensaryModel.Name;dispensary.Address.Name=dispensary.Name"
+                           placeholder="Dispensary Name" ng-model="dispensary.Name" name="DispensaryName" />
+                    <p ng-if="form.$submitted && form.DispensaryName.$error.required" class="text-danger">Dispensary Name is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="type">Slug</label>
+                    <input type="text" value="" ng-model="dispensary.Slug" class="form-control" placeholder="Slug" ng-required="true"
+                           name="DispensarySlug" id="DispensarySlug" />
+                    <p ng-if="form.$submitted && form.DispensarySlug.$error.required" class="text-danger">Slug is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="type">Email</label>
+                    <input type="email" ng-model="dispensary.EmailAddress" ng-required="true"
+                           class="form-control" placeholder="Email" name="DispensaryEmail" id="DispensaryEmail" />
+                    <p ng-if="form.$submitted && form.DispensaryEmail.$error.required" class="text-danger">Dispensary Email is required.</p>
+                    <p ng-if="form.$submitted && form.DispensaryEmail.$error.email" class="text-danger">Invalid email</p>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="type">Phone</label>
+                    <input type="text" ng-model="dispensary.PhoneNumber" ng-required="true" class="form-control" placeholder="Phone Number"
+                           name="DispensaryPhone" id="DispensaryPhone" phone-format="dispensary.PhoneNumber" />
+                    <p ng-if="form.$submitted && form.DispensaryPhone.$error.required" class="text-danger">Dispensary Phone Number is required.</p>
+                </div>
+                <div class="form-group col-xs-4">
+                    <label for="type">Type</label>
+
+                    <select name="type" ng-model="dispensary.Type" id="type" class="form-control">
+                        <option value="Medicinal">Medicinal</option>
+                        <option value="Recreational">Recreational</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <label for="ApprovalCodes">Approval Zip Codes</label>
+                    <input type="text" value="" ng-model="dispensary.ApprovalZipCodes"
+                           class="form-control" placeholder="Valid patient zipcodes 01456,01457,01458 ..." name="ApprovalCodes" zipcodesvalidator ng-required="true" id="ApprovalCodes" />
+                    <p ng-if="form.$submitted && form.ApprovalCodes.$error.required" class="text-danger">Approval Zipcodes are required.</p>
+                    <p ng-if="form.$submitted && form.ApprovalCodes.$error.zipcodeValidator" class="text-danger">Approval Zipcode format is invalid.</p>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-7 col-xs-12">
+                    <label for="DispensaryDescription">Info or Description:</label>
+                    <textarea rows="4" type="text" value="" ng-required="true" ng-change="dispensary.HoursAndInfo = dispensary.Description;"
+                              ng-model="dispensary.Description" class="form-control" placeholder="Additional Information about your dispensary and what makes it unique"
+                              name="DispensaryDescription" id="DispensaryDescription"></textarea>
+                    <p ng-if="form.$submitted && form.DispensaryDescription.$error.required" class="text-danger">Dispensary Description is required.</p>
+                </div>
+                <div class="form-group col-sm-5 col-xs-12">
+                    <label for="DispensaryInput">Search for you dispensary Address</label>
+                    <input type="text" value="" ng-model="dispensary.gAddress" ng-required="true" class="form-control"
+                           placeholder="Enter your address" name="InputAddressDispensary" id="InputAddressDispensary" />
+                    <p ng-if="form.$submitted && form.InputAddressDispensary.$error.required" class="text-danger">Address is required.</p>
+
+                </div>
+                <div class="form-group col-sm-5 col-xs-6">
+                    <input type="text" value="" placeholder="Unit # or Suite" ng-model="dispensary.Address.Address2" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-2 col-xs-12">
+                    <button type="button" ng-class="{active : dispensary.HasDelivery,btnActive:dispensary.HasDelivery}" ng-click="dispensary.HasDelivery = !dispensary.HasDelivery"
+                            class="btn btn-block btn-primary">
+                        Delivers?
+                    </button>
+                </div>
+                <div class="form-group col-sm-10 col-xs-12">
+                    <input type="text" value="" ng-model="dispensary.DeliveryZipCodes" ng-disabled="!dispensary.HasDelivery"
+                           class="form-control" placeholder="Zipcodes in delivery zone 01456,01457,01458 ..." name="DeliveryCodes" id="DeliveryCodes" />
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="button" ng-class="{active : dispensary.HasStorefront,btnActive:dispensary.HasStorefront}" ng-click="dispensary.HasStorefront = !dispensary.HasStorefront"
+                        class="btn btn-primary">
+                    Has Storefront?
+                </button>
+                <button type="button" ng-class="{active : dispensary.IsCaregiver,btnActive:dispensary.IsCaregiver}" ng-click="dispensary.IsCaregiver = !dispensary.IsCaregiver"
+                        class="btn btn-primary">
+                    Is Caregiver?
+                </button>
+                <button type="button" ng-class="{active : dispensary.IsPrivate,btnActive:dispensary.IsPrivate}" ng-click="dispensary.IsPrivate = !dispensary.IsPrivate"
+                        class="btn btn-primary">
+                    Is Private?
+                </button>
+            </div>
+            <div class="clearfix">
+                <div class="form-group">
+                    <h3>Hours Of Operation</h3>
+                </div>
+                <div class="form-group">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Time
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="dispensary.hoursOfOperation.length==0">
+                                <td colspan="2" class="text-center">Select time to display</td>
+                            </tr>
+                            <tr ng-required="true" ng-repeat="n in dispensary.hoursOfOperation">
+                                <td>
+                                    <span class="hours-start ">{{Days[n.Day]}} {{Starts[n.Start]}}-{{Stops[n.Stop]}}</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger pull-right" ng-click="removeHours($index)">Remove</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p ng-if="form.$submitted && dispensary.hoursOfOperation == 0" class="text-danger">Hours of Operation are required.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.Day" class="form-control input-sm">
+                        <option value="0">Mon</option>
+                        <option value="1">Tue</option>
+                        <option value="2">Wed</option>
+                        <option value="3">Thu</option>
+                        <option value="4">Fri</option>
+                        <option value="5">Sat</option>
+                        <option value="6">Sun</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.Start" class="form-control input-sm">
+                        <option value="0 0.0">12:00 am (midnight)</option>
+                        <option value="0 0.5">12:30 am </option>
+                        <option value="0 1.0">1:00 am </option>
+                        <option value="0 1.5">1:30 am </option>
+                        <option value="0 2.0">2:00 am </option>
+                        <option value="0 2.5">2:30 am </option>
+                        <option value="0 3.0">3:00 am </option>
+                        <option value="0 3.5">3:30 am </option>
+                        <option value="0 4.0">4:00 am </option>
+                        <option value="0 4.5">4:30 am </option>
+                        <option value="0 5.0">5:00 am </option>
+                        <option value="0 5.5">5:30 am </option>
+                        <option value="0 6.0">6:00 am </option>
+                        <option value="0 6.5">6:30 am </option>
+                        <option value="0 7.0">7:00 am </option>
+                        <option value="0 7.5">7:30 am </option>
+                        <option value="0 8.0">8:00 am </option>
+                        <option value="0 8.5">8:30 am </option>
+                        <option value="0 9.0">9:00 am </option>
+                        <option value="0 9.5">9:30 am </option>
+                        <option value="0 10.0">10:00 am </option>
+                        <option value="0 10.5">10:30 am </option>
+                        <option value="0 11.0">11:00 am </option>
+                        <option value="0 11.5">11:30 am </option>
+                        <option value="0 12.0">12:00 pm (noon)</option>
+                        <option value="0 12.5">12:30 pm </option>
+                        <option value="0 13.0">1:00 pm </option>
+                        <option value="0 13.5">1:30 pm </option>
+                        <option value="0 14.0">2:00 pm </option>
+                        <option value="0 14.5">2:30 pm </option>
+                        <option value="0 15.0">3:00 pm </option>
+                        <option value="0 15.5">3:30 pm </option>
+                        <option value="0 16.0">4:00 pm </option>
+                        <option value="0 16.5">4:30 pm </option>
+                        <option value="0 17.0">5:00 pm </option>
+                        <option value="0 17.5">5:30 pm </option>
+                        <option value="0 18.0">6:00 pm </option>
+                        <option value="0 18.5">6:30 pm </option>
+                        <option value="0 19.0">7:00 pm </option>
+                        <option value="0 19.5">7:30 pm </option>
+                        <option value="0 20.0">8:00 pm </option>
+                        <option value="0 20.5">8:30 pm </option>
+                        <option value="0 21.0">9:00 pm </option>
+                        <option value="0 21.5">9:30 pm </option>
+                        <option value="0 22.0">10:00 pm </option>
+                        <option value="0 22.5">10:30 pm </option>
+                        <option value="0 23.0">11:00 pm </option>
+                        <option value="0 23.5">11:30 pm </option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.Stop" class="form-control input-sm">
+                        <option value="0 0.5">12:30 am </option>
+                        <option value="0 1.0">1:00 am </option>
+                        <option value="0 1.5">1:30 am </option>
+                        <option value="0 2.0">2:00 am </option>
+                        <option value="0 2.5">2:30 am </option>
+                        <option value="0 3.0">3:00 am </option>
+                        <option value="0 3.5">3:30 am </option>
+                        <option value="0 4.0">4:00 am </option>
+                        <option value="0 4.5">4:30 am </option>
+                        <option value="0 5.0">5:00 am </option>
+                        <option value="0 5.5">5:30 am </option>
+                        <option value="0 6.0">6:00 am </option>
+                        <option value="0 6.5">6:30 am </option>
+                        <option value="0 7.0">7:00 am </option>
+                        <option value="0 7.5">7:30 am </option>
+                        <option value="0 8.0">8:00 am </option>
+                        <option value="0 8.5">8:30 am </option>
+                        <option value="0 9.0">9:00 am </option>
+                        <option value="0 9.5">9:30 am </option>
+                        <option value="0 10.0">10:00 am </option>
+                        <option value="0 10.5">10:30 am </option>
+                        <option value="0 11.0">11:00 am </option>
+                        <option value="0 11.5">11:30 am </option>
+                        <option value="0 12.0">12:00 pm (noon)</option>
+                        <option value="0 12.5">12:30 pm </option>
+                        <option value="0 13.0">1:00 pm </option>
+                        <option value="0 13.5">1:30 pm </option>
+                        <option value="0 14.0">2:00 pm </option>
+                        <option value="0 14.5">2:30 pm </option>
+                        <option value="0 15.0">3:00 pm </option>
+                        <option value="0 15.5">3:30 pm </option>
+                        <option value="0 16.0">4:00 pm </option>
+                        <option value="0 16.5">4:30 pm </option>
+                        <option value="0 17.0">5:00 pm </option>
+                        <option value="0 17.5">5:30 pm </option>
+                        <option value="0 18.0">6:00 pm </option>
+                        <option value="0 18.5">6:30 pm </option>
+                        <option value="0 19.0">7:00 pm </option>
+                        <option value="0 19.5">7:30 pm </option>
+                        <option value="0 20.0">8:00 pm </option>
+                        <option value="0 20.5">8:30 pm </option>
+                        <option value="0 21.0">9:00 pm </option>
+                        <option value="0 21.5">9:30 pm </option>
+                        <option value="0 22.0">10:00 pm </option>
+                        <option value="0 22.5">10:30 pm </option>
+                        <option value="0 23.0">11:00 pm </option>
+                        <option value="0 23.5">11:30 pm </option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <button type="button" ng-click="addHours()" class="btn btn-primary btn-sm">Add Hours</button>
+                </div>
+            </div>
+            <div class="bottom-btn-area text-center">
+                <button type="submit" class="btn btn-success btn-lg" value="Add Dispensary">Add Dispensary</button>
+            </div>
+        </form>
+    </div>
+</script>
+
+<script type="text/ng-template" id="editDispensary.html">
+    <div class="panel-body">
+        <form style="margin-top: 30px;" name="updateDispensaryForm" class="form panel-body" ng-submit="updateDispensary(updateDispensaryForm, updateDispensaryForm.$valid)" novalidate>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="type">Name</label>
+                    <input type="text" value="" class="form-control" ng-required="true" ng-change="dispensary.slug=dispensaryModel.name;dispensary.address.name=dispensary.name"
+                           placeholder="Dispensary Name" ng-model="dispensary.name" name="DispensaryName" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensaryName.$error.required" class="text-danger">Dispensary Name is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="type">Slug</label>
+                    <input type="text" value="" ng-model="dispensary.slug" class="form-control" placeholder="Slug" ng-required="true"
+                           name="DispensarySlug" id="DispensarySlug" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensarySlug.$error.required" class="text-danger">Slug is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="type">Email</label>
+                    <input type="email" ng-model="dispensary.emailAddress" ng-required="true"
+                           class="form-control" placeholder="Email" name="DispensaryEmail" id="DispensaryEmail" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensaryEmail.$error.required" class="text-danger">Dispensary Email is required.</p>
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensaryEmail.$error.email" class="text-danger">Invalid email</p>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="type">Phone</label>
+                    <input type="text" ng-model="dispensary.phoneNumber" ng-required="true" class="form-control" placeholder="Phone Number"
+                           name="DispensaryPhone" id="DispensaryPhone" phone-format="dispensary.PhoneNumber" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensaryPhone.$error.required" class="text-danger">Dispensary Phone Number is required.</p>
+                </div>
+                <div class="form-group col-xs-4">
+                    <label for="type">Type</label>
+
+                    <select name="type" ng-model="dispensary.type" id="type" class="form-control">
+                        <option value="Medicinal">Medicinal</option>
+                        <option value="Recreational">Recreational</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-xs-12">
+                    <label for="ApprovalCodes">Approval Zip Codes</label>
+                    <input type="text" value="" ng-model="dispensary.approvalZipCodes"
+                           class="form-control" placeholder="Valid patient zipcodes 01456,01457,01458 ..." name="ApprovalCodes" zipcodesvalidator ng-required="true" id="ApprovalCodes" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.ApprovalCodes.$error.required" class="text-danger">Approval Zipcodes are required.</p>
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.ApprovalCodes.$error.zipcodeValidator" class="text-danger">Approval Zipcode format is invalid.</p>
+                </div>
+
+
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-7 col-xs-12">
+                    <label for="DispensaryDescription">Info or Description:</label>
+                    <textarea rows="4" type="text" value="" ng-required="true" ng-change="dispensary.hoursAndInfo = dispensary.description;"
+                              ng-model="dispensary.description" class="form-control" placeholder="Additional Information about your dispensary and what makes it unique"
+                              name="DispensaryDescription" id="DispensaryDescription"></textarea>
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.DispensaryDescription.$error.required" class="text-danger">Dispensary Description is required.</p>
+                </div>
+                <div class="form-group col-sm-5 col-xs-12">
+                    <label for="DispensaryInput">Search for you dispensary Address</label>
+                    <input type="text" value="" ng-model="dispensary.gAddress" ng-required="true" class="form-control"
+                           placeholder="Enter your address" name="InputAddressDispensary" id="InputAddressDispensary" />
+                    <p ng-if="updateDispensaryForm.$submitted && updateDispensaryForm.InputAddressDispensary.$error.required" class="text-danger">Address is required.</p>
+
+                </div>
+                <div class="form-group col-sm-5 col-xs-6">
+                    <input type="text" value="" placeholder="Unit # or Suite" ng-model="dispensary.address.address2" class="form-control" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-2 col-xs-12">
+                    <button type="button" ng-class="{active : dispensary.hasDelivery,btnActive:dispensary.hasDelivery}" ng-click="dispensary.hasDelivery = !dispensary.hasDelivery"
+                            class="btn btn-block btn-primary">
+                        Delivers?
+                    </button>
+                </div>
+                <div class="form-group col-sm-10 col-xs-12">
+                    <input type="text" value="" ng-model="dispensary.deliveryZipCodes" ng-disabled="!dispensary.hasDelivery"
+                           class="form-control" placeholder="Zipcodes in delivery zone 01456,01457,01458 ..." name="DeliveryCodes" id="DeliveryCodes" />
+                </div>
+            </div>
+            <div class="text-right">
+                <button type="button" ng-class="{active : dispensary.hasStorefront,btnActive:dispensary.hasStorefront}" ng-click="dispensary.hasStorefront = !dispensary.hasStorefront"
+                        class="btn btn-primary">
+                    Has Storefront?
+                </button>
+                <button type="button" ng-class="{active : dispensary.isCaregiver,btnActive:dispensary.isCaregiver}" ng-click="dispensary.isCaregiver = !dispensary.isCaregiver"
+                        class="btn btn-primary">
+                    Is Caregiver?
+                </button>
+                <button type="button" ng-class="{active : dispensary.isPrivate,btnActive:dispensary.isPrivate}" ng-click="dispensary.isPrivate = !dispensary.isPrivate"
+                        class="btn btn-primary">
+                    Is Private?
+                </button>
+            </div>
+            <div class="clearfix">
+                <div class="form-group">
+                    <h3>Hours Of Operation</h3>
+                </div>
+                <div class="form-group">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>
+                                    Time
+                                </th>
+                                <th>
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-if="dispensary.hoursOfOperation.length==0">
+                                <td colspan="2" class="text-center">Select time to display</td>
+                            </tr>
+                            <tr ng-repeat="n in dispensary.hoursOfOperation">
+                                <td>
+                                    <span class="hours-start ">{{Days[n.day]}} {{Starts[n.start]}}-{{Stops[n.stop]}}</span>
+                                </td>
+                                <td>
+                                    <button type="button" class="btn btn-danger pull-right" ng-click="removeHours($index)">Remove</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p ng-if="updateDispensaryForm.$submitted && dispensary.hoursOfOperation == 0" class="text-danger">Hours of Operation are required.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.day" class="form-control input-sm">
+                        <option value="0">Mon</option>
+                        <option value="1">Tue</option>
+                        <option value="2">Wed</option>
+                        <option value="3">Thu</option>
+                        <option value="4">Fri</option>
+                        <option value="5">Sat</option>
+                        <option value="6">Sun</option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.start" class="form-control input-sm">
+                        <option value="0 0.0">12:00 am (midnight)</option>
+                        <option value="0 0.5">12:30 am </option>
+                        <option value="0 1.0">1:00 am </option>
+                        <option value="0 1.5">1:30 am </option>
+                        <option value="0 2.0">2:00 am </option>
+                        <option value="0 2.5">2:30 am </option>
+                        <option value="0 3.0">3:00 am </option>
+                        <option value="0 3.5">3:30 am </option>
+                        <option value="0 4.0">4:00 am </option>
+                        <option value="0 4.5">4:30 am </option>
+                        <option value="0 5.0">5:00 am </option>
+                        <option value="0 5.5">5:30 am </option>
+                        <option value="0 6.0">6:00 am </option>
+                        <option value="0 6.5">6:30 am </option>
+                        <option value="0 7.0">7:00 am </option>
+                        <option value="0 7.5">7:30 am </option>
+                        <option value="0 8.0">8:00 am </option>
+                        <option value="0 8.5">8:30 am </option>
+                        <option value="0 9.0">9:00 am </option>
+                        <option value="0 9.5">9:30 am </option>
+                        <option value="0 10.0">10:00 am </option>
+                        <option value="0 10.5">10:30 am </option>
+                        <option value="0 11.0">11:00 am </option>
+                        <option value="0 11.5">11:30 am </option>
+                        <option value="0 12.0">12:00 pm (noon)</option>
+                        <option value="0 12.5">12:30 pm </option>
+                        <option value="0 13.0">1:00 pm </option>
+                        <option value="0 13.5">1:30 pm </option>
+                        <option value="0 14.0">2:00 pm </option>
+                        <option value="0 14.5">2:30 pm </option>
+                        <option value="0 15.0">3:00 pm </option>
+                        <option value="0 15.5">3:30 pm </option>
+                        <option value="0 16.0">4:00 pm </option>
+                        <option value="0 16.5">4:30 pm </option>
+                        <option value="0 17.0">5:00 pm </option>
+                        <option value="0 17.5">5:30 pm </option>
+                        <option value="0 18.0">6:00 pm </option>
+                        <option value="0 18.5">6:30 pm </option>
+                        <option value="0 19.0">7:00 pm </option>
+                        <option value="0 19.5">7:30 pm </option>
+                        <option value="0 20.0">8:00 pm </option>
+                        <option value="0 20.5">8:30 pm </option>
+                        <option value="0 21.0">9:00 pm </option>
+                        <option value="0 21.5">9:30 pm </option>
+                        <option value="0 22.0">10:00 pm </option>
+                        <option value="0 22.5">10:30 pm </option>
+                        <option value="0 23.0">11:00 pm </option>
+                        <option value="0 23.5">11:30 pm </option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <select ng-model="hoursModel.stop" class="form-control input-sm">
+                        <option value="0 0.5">12:30 am </option>
+                        <option value="0 1.0">1:00 am </option>
+                        <option value="0 1.5">1:30 am </option>
+                        <option value="0 2.0">2:00 am </option>
+                        <option value="0 2.5">2:30 am </option>
+                        <option value="0 3.0">3:00 am </option>
+                        <option value="0 3.5">3:30 am </option>
+                        <option value="0 4.0">4:00 am </option>
+                        <option value="0 4.5">4:30 am </option>
+                        <option value="0 5.0">5:00 am </option>
+                        <option value="0 5.5">5:30 am </option>
+                        <option value="0 6.0">6:00 am </option>
+                        <option value="0 6.5">6:30 am </option>
+                        <option value="0 7.0">7:00 am </option>
+                        <option value="0 7.5">7:30 am </option>
+                        <option value="0 8.0">8:00 am </option>
+                        <option value="0 8.5">8:30 am </option>
+                        <option value="0 9.0">9:00 am </option>
+                        <option value="0 9.5">9:30 am </option>
+                        <option value="0 10.0">10:00 am </option>
+                        <option value="0 10.5">10:30 am </option>
+                        <option value="0 11.0">11:00 am </option>
+                        <option value="0 11.5">11:30 am </option>
+                        <option value="0 12.0">12:00 pm (noon)</option>
+                        <option value="0 12.5">12:30 pm </option>
+                        <option value="0 13.0">1:00 pm </option>
+                        <option value="0 13.5">1:30 pm </option>
+                        <option value="0 14.0">2:00 pm </option>
+                        <option value="0 14.5">2:30 pm </option>
+                        <option value="0 15.0">3:00 pm </option>
+                        <option value="0 15.5">3:30 pm </option>
+                        <option value="0 16.0">4:00 pm </option>
+                        <option value="0 16.5">4:30 pm </option>
+                        <option value="0 17.0">5:00 pm </option>
+                        <option value="0 17.5">5:30 pm </option>
+                        <option value="0 18.0">6:00 pm </option>
+                        <option value="0 18.5">6:30 pm </option>
+                        <option value="0 19.0">7:00 pm </option>
+                        <option value="0 19.5">7:30 pm </option>
+                        <option value="0 20.0">8:00 pm </option>
+                        <option value="0 20.5">8:30 pm </option>
+                        <option value="0 21.0">9:00 pm </option>
+                        <option value="0 21.5">9:30 pm </option>
+                        <option value="0 22.0">10:00 pm </option>
+                        <option value="0 22.5">10:30 pm </option>
+                        <option value="0 23.0">11:00 pm </option>
+                        <option value="0 23.5">11:30 pm </option>
+                    </select>
+                </div>
+                <div class="form-group col-sm-3">
+                    <button type="button" ng-click="addHours()" class="btn btn-primary btn-sm">Add Hours</button>
+                </div>
+            </div>
+            <div class="col-sm-3 text-right">
+                <div class="form-group text-right">
+                    <button type="submit" class="btn btn-success btn-lg" value="Update Dispensary Info">Update Dispensary Info</button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+
+
+</script>

@@ -1,0 +1,21 @@
+﻿@model Jane.Data.EntityFramework.Entities.User
+@{
+    ViewBag.Title = "Ask M. Jane Admin";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        @if (@Model.DispensaryStaff.Count > 0)
+        {
+            <h2>@Model.DispensaryStaff</h2>
+        }
+        else
+        {
+            <h2>You are not an admin to any dispensaries.</h2>
+            <a class="btn btn-primary" href="/Admin/Dispensaries">Add a dispensary</a>
+        }
+    </div>
+</div>
+
+

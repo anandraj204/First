@@ -1,0 +1,26 @@
+﻿
+@{
+    ViewBag.Title = "Verify your phone number";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+<div class="image-wrapper" ng-controller="MyAccountCtrl">
+    <div class="background-zip-image"></div>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+                <div class="jumbotron">
+                    <p>Please enter the code that you have received on your mobile phone.</p>
+                    <div class="zipcode-wrapper">
+                        <span class="alert-danger">{{phoneNumberError}}</span>
+                        <div class="form-group">
+                            <input type="text" value="" ng-model="verifyCode" name="number-input" class="form-control" autofocus="" placeholder="Code" maxlength="5" required="">
+                        </div>
+                        <button class="btn btn-lg btn-one zip-submit hidden-xs" ng-click="verifyPhoneNumber()">Verify</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

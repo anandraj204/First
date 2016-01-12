@@ -1,0 +1,180 @@
+﻿.body-content .image-wrapper{
+	position: relative;
+	width: 100%;
+    min-height: calc(100vh - 52px - 265px);
+    margin:-20px 0;
+
+}
+.body-content .image-wrapper .background-zip-image {
+	background: url('../../images/zipcode/slide-1a.jpg') no-repeat center center;
+	height: 100%;
+	width: 100%;
+	background-size: cover;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	z-index: -1;
+}
+.vertical-center-area{
+    white-space:nowrap;
+    min-height:calc(100vh - 57px - 279px);
+    vertical-align:middle;
+    text-align:center;
+    margin:0;
+}
+.vertical-center-area:after{
+    content:'';
+    vertical-align:middle;
+	display:inline-block;
+	min-height:calc(100vh - 57px - 279px);
+}
+.vertical-center-area .jumbotron{
+    vertical-align:middle;
+    display:inline-block;
+    white-space:normal;
+}
+.body-content .image-wrapper .jumbotron{
+	background-color: rgba(0,0,0,0.3);
+    color: #fff;
+    text-align: center;
+    border-radius: 10px;
+	overflow: hidden;
+    margin:25px 0;
+    padding:50px;
+    min-width:520px;
+}
+.body-content .image-wrapper .jumbotron.short{
+    max-width:720px;
+}
+.body-content .image-wrapper .jumbotron p{
+	font-size: 20px;
+}
+.body-content .image-wrapper .jumbotron .small{
+	font-size: 14px;
+}
+.body-content .image-wrapper .jumbotron .small a{
+	color: #fff;
+}
+.body-content .zipcode-wrapper{
+	margin: 0 auto;
+    max-width:60%;
+    padding:30px 0;
+}
+.body-content .image-wrapper .zipcode-wrapper input{
+	text-align: center;
+    height:46px;
+    font-size:16px;
+    border:none;
+}
+.body-content .zipcode-wrapper .btn{
+    width:100%;
+    height:46px;
+    font-size:16px;
+}
+.required-docs form{
+	margin: 15px 0;
+}
+.required-docs p{
+    font-size:14px;
+}
+.required-docs form .photo-id{
+	padding:45px 15px 0;
+}
+.required-docs form .govt-id-label{
+	margin-top: 5px;
+}
+.required-docs form .med-card label[for='MmjRxImg']{
+	margin-left: -15px;
+}
+.required-docs form .radio-wrapper{
+	font-size: 17px;
+	margin: 0 0 15px;
+}
+.required-docs form .radio-wrapper label + label{
+    margin-left:10px;
+}
+.required-docs form .upload-img{
+	margin-top: 15px;
+}
+.required-docs .bottom-wrapper{
+	padding: 50px 0 0;
+    font-size:14px;
+    margin:0;
+}
+.required-docs .bottom-wrapper button {
+	width: inherit;
+    min-width:120px;
+    margin:0 0 7px;
+}
+.required-docs .bottom-wrapper button + p{
+    margin:5px 0 0;
+}
+.body-content .image-wrapper .bottom-wrapper button + p{
+    font-size:14px;
+}
+.required-docs .bottom-wrapper a{
+    color:#fff;
+}
+@media only screen and (max-width : 992px) {
+    .required-docs form .photo-id{
+        padding:10px 14px 30px;
+    }
+    .body-content .image-wrapper .jumbotron.form-area-dark{
+        min-width:100%;
+    }
+    .form-area-dark label{
+        padding-top:5px;
+    }
+    .required-docs .bottom-wrapper{
+        padding:30px 0px 0px;
+    }
+}
+@media(max-width: 767px) {
+    .body-content .image-wrapper {
+	    min-height: calc(100vh - 52px - 140px);
+    }
+    .body-content .image-wrapper .jumbotron {
+	    padding: 30px;
+        min-width:1px;
+    }
+    .vertical-center-area{
+        padding:0 15px;
+    }
+    .container-fluid .vertical-center-area{
+        padding:0;
+    }
+    .body-content .image-wrapper .jumbotron p {
+	    font-size: 16px;
+    }
+    .required-docs form .photo-id {
+	    margin-top: 0;
+    }
+    .body-content .zipcode-wrapper{
+        max-width:320px;
+    }
+    .required-docs form .photo-id{
+        padding:0 14px 30px;
+    }
+    .required-docs form{
+        text-align:left;
+    }
+    .required-docs form .text-left,
+    .required-docs form .text-right{
+        text-align:left;
+    }
+    .required-docs .bottom-wrapper{
+        text-align:center;
+        padding:20px 0 0;
+    }
+    .required-docs form .radio-wrapper{
+        overflow:hidden;
+    }
+    .required-docs form .radio-wrapper label{
+        float:left;
+        clear:left;
+    }
+    .required-docs form .radio-wrapper label + label{
+        margin-left:0;
+    }
+}

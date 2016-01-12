@@ -1,0 +1,30 @@
+﻿@using Newtonsoft.Json
+@model Jane.Core.Models.DispensaryModel
+
+@{
+    ViewBag.Title = "Dispensary - Details";
+    Layout = "../Shared/_LayoutBase.cshtml";
+}
+
+@section EndOfHead{
+    @Styles.Render("~/Areas/Menu/Content/menu.css")
+}
+
+<div id="holder" class="container-fluid menu-list-wrapper" ng-controller="DispensaryDetailsCtrl" ng-init="init(@JsonConvert.SerializeObject(@Model))">
+    <h2>{{ dispensary.Name }}</h2>
+
+    <section class="content-section">
+        <h2>Description</h2>
+        <p>{{ dispensary.Description }}</p>
+    </section>
+
+    <section class="content-section">
+        <h2>Contacts</h2>
+        <p>Telephone: {{ dispensary.PhoneNumber }}</p>
+        <p>Email: {{ dispensary.EmailAddress }}</p>
+    </section>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/Areas/Menu/Scripts/mobile-menu.js")
+}

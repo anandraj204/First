@@ -1,0 +1,106 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Jane - Patient Application";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+<div class="container-fluid" ng-controller="PatientApplicationCtrl">
+    @if (Request.IsAuthenticated)
+    {
+        <div class="text-center heading-area">
+            <h2> New Patient Application </h2>
+        </div>
+        <alert type="danger" ng-if="user.patientInfo.approvalStatus == 3">Your application was rejected.  Please update the information based on your rejection letter and resubmit.</alert>
+        <alert type="warning" ng-if="user.patientInfo.approvalStatus == 2">Your application has been submitted and is currently being reviewed. Please check back soon.</alert>
+        <form name="form" class="form form-area" ng-submit="SaveUserInfo(form, form.$valid)" novalidate>
+            <h3> User Information </h3>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="Firstname">First Name</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="First Name" ng-model="user.firstName" name="Firstname" id="Firstname" />
+                    <p ng-if="form.$submitted && form.Firstname.$error.required" class="text-danger">First Name is required to order.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="Lastname">Last Name</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Last Name" ng-model="user.lastName" name="Lastname" id="Lastname" />
+                    <p ng-if="form.$submitted && form.Lastname.$error.required" class="text-danger">Last Name is required to order.</p>
+                </div>
+
+                <div class="form-group col-sm-4">
+                    <label for="ContactNumber">Contact Number</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="(555) 555-5555" ng-model="user.phoneNumber" name="ContactNumber" id="ContactNumber" />
+                    <p ng-if="form.$submitted && form.ContactNumber.$error.required" class="text-danger">You must supply a contact number</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4 col-xs-12">
+                    <label for="Birthday">Birthday</label>
+                    <input type="date" id="Birthday" name="Birthday" class="form-control" ng-model="user.birthday"
+                            placeholder="dd-MM-yyyy" min="1900-01-01" max="1999-01-01" ng-required="true" />
+                    <p ng-if="form.$submitted && form.Birthday.$error.required" class="text-danger">Birthday is required to order</p>
+                </div>
+                <div class="form-group col-sm-4 col-xs-12">
+                    <label for="Zipcode">Zipcode</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Zipcode" ng-model="user.zipcode" name="Zipcode" id="Zipcode" />
+                    <p ng-if="form.$submitted && form.Zipcode.$error.required" class="text-danger">You must supply your zipcode.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <h3>Upload Patient Verification Documents</h3>
+                    <div class="row upload-area">
+                        <div class="form-group col-sm-6">
+                            <label for="GovernmentId">Government Issued Photo I.D</label>
+                            <div name="GovernmentId" class="btn btn-primary" ng-model="idupload" ngf-select="UploadId($file)">Select Photo I.D Image To Upload</div>
+                            <input name="photoid" type="hidden" ng-model="user.patientInfo.driversLicenseImageUrl" ng-required="true" />
+                            <p ng-if="form.$submitted && form.photoid.$error.required" class="text-danger">You must upload a Government Issued Photo I.D.</p>
+                            <div class="btn btn-warning" ng-if="user.patientInfo.driversLicenseImageUrl != ''">Photo ID Upload Completed!</div>
+                        </div>
+                        <div class="form-group col-sm-6 col-xs-12">
+                            <div style="margin-top:-25px;">
+                                <input type="radio" ng-model="patientdoctype" value="mmj" /> Medical Marijuana Card
+                                <input type="radio" ng-model="patientdoctype" value="rx" /> Dr. Recommendation <br />
+                            </div>
+                            <label for="MmjRxImg">Valid Rx or MMJ license/card</label>
+                            <div name="GovernmentId" name="MmjRxImg" class="btn btn-primary" ng-model="rxupload" ngf-select="UploadRx($file)">Select Rx/Mmj Card To Upload</div>
+                            <input name="recommendation" type="hidden" ng-model="user.patientInfo.recommendationImageUrl" ng-required="true" />
+                            <p ng-if="form.$submitted && form.recommendation.$error.required" class="text-danger">You must upload a recommendation.</p>
+
+                            <div class="btn btn-warning" ng-if="user.patientInfo.recommendationImageUrl != ''">Medical Rx Upload Completed!</div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="form-group col-sm-6 col-xs-12">
+                            <img class="img-responsive" ngf-src="idupload">
+                        </div>
+                        <div class="form-group col-sm-6 col-xs-12">
+                            <img class="img-responsive" ngf-src="rxupload">
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-offset-8 col-sm-4 col-xs-12">
+                    <button type="submit" value="" class="btn btn-success btn-lg"
+                            name="userInfoSave" id="userInfoSave">
+                        Submit Patient Documentation
+                    </button>
+                </div>
+            </div>
+        </form>
+    }
+    else
+    {
+        <div class="row">
+            I'm not
+        </div>
+    }
+
+
+</div>

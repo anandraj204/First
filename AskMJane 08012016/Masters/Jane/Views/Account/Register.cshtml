@@ -1,0 +1,65 @@
+﻿@model Jane.Web.Models.RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+}
+
+<div class="container register-wrapper" ng-controller="LoginCtrl">
+
+    <div class="row">
+        <div class="col-xs-12 col-sm-6 content">
+            <h1>Welcome to Jane!</h1>
+            <p class="hidden-xs">"Jane tries to make life as easy as possible for you so if you need any help at all: recommendations, advice, questions that need answering, don't hesitate to AskJane - she's here to help after all :)"</p>
+        </div>
+        <div class="col-xs-12 col-sm-6 register">
+            <h2>Register.</h2>
+            <h4>Create New Account.</h4>
+            <form name="registerform" class="form form-horizontal" ng-submit="register(registerform, registerform.$valid)" novalidate>
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-10">
+                        <alert ng-repeat="alert in alerts" type="danger" close="closeAlert($index)">{{alert.msg}}</alert>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="Email">Email</label>
+                        <div class="col-md-10">
+                            <input type="text" value="" aria-required ng-model="username" ng-required="true" class="form-control" placeholder="jane@example.com" id="Email" name="Email"/>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="Password">Password</label>
+                        <div class="col-md-10">
+                            <input type="password" value="" ng-model="password" placeholder="Password" ng-required="true" class="form-control" id="Password" name="Password"/>
+                        </div>
+                    </div>
+                    <!-- <div class="form-group">
+                        <label class="col-md-2 control-label" for="ConfirmPassword">Confirm</label>
+                        <div class="col-md-10">
+                            <input type="password" value="" ng-model="confirmpassword" ng-required="true" class="form-control" id="Password" name="ConfirmPassword"/>
+                        </div>
+                    </div> -->
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="ZipCode">Zip Code</label>
+                        <div class="col-md-10">
+                            <input type="text" value="" ng-model="zipcode" ng-required="true" placeholder="Zip Code" class="form-control" id="ZipCode" name="ZipCode" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-xs-12 col-md-5">
+                            <input type="submit" class="btn btn-default  btn-block" value="Register"/>
+                        </div>
+                        <div class="col-xs-12 col-md-5 register">
+                            <p>
+                                Have an account? <a href="/login">Login</a>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+}

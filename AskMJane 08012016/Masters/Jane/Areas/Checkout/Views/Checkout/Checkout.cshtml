@@ -1,0 +1,53 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Jane - Checkout";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+
+<div class="container" ng-controller="CheckoutCtrl">
+    @if (Request.IsAuthenticated)
+    {
+        <div class="row">
+            <div class="col-xs-12">
+                <alert type="success" ng-if="user.patientInfo.approvalStatus == 2">
+                    Congratulations.
+                    Your application is currently in review. You will be able to complete your order once the application is accepted.
+                    In the meantime, update your delivery address so we can expedite your order.
+                </alert>
+            </div>
+            <div class="col-sm-12 col-xs-12">
+                <form name="form" class="form well" ng-submit="SaveOrderInfo(form, form.$valid)" novalidate>
+                    <h3> Checkout Information </h3>
+                    <div class="row">
+                        <div class="form-group col-sm-6 col-xs-12">
+                            <button type="button" ng-class="{active : item == SelectedDeliveryType}" ng-click="SelectDeliveryType(item)"
+                                    ng-repeat="item in DeliveryTypeEnum" class="btn">
+                                {{item.Type}}
+                            </button>
+                        </div>
+                    </div>
+                    <div ng-if="SelectedDeliveryType.Type == 'Delivery'">
+                        <div class="row">
+                            <div class="form-group col-sm-5 col-xs-12">
+                                <label for="DeliveryAddress">Delivery Address</label>
+                                <input type="text" value="" ng-model="GoogleAddress" ng-required="true" class="form-control"
+                                       placeholder="Enter your address" name="DeliveryAddress" id="DeliveryAddress" />
+                                <p ng-if="form.$submitted && form.DeliveryAddress.$error.required" class="text-danger">Delivery Address is required.</p>
+
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="form-group col-sm-5 col-xs-12">
+                                <input type="text" value="" ng-model="user.DeliveryAddress.Address2" class="form-control"
+                                       placeholder="Special instructions (Apartment, Unit #, etc)" name="DeliveryAddress2" id="DeliveryAddress2" />
+                            </div>
+                        </div>
+                    </div>
+            
+                </form>
+            </div>
+        </div>
+    }
+</div>

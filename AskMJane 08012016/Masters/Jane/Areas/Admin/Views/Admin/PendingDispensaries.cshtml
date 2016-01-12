@@ -1,0 +1,166 @@
+﻿@{
+    ViewBag.Title = "Jane - Pending dispensaries";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Pending Dispensaries</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div class="ibox">
+        <div class="ibox-content" ng-controller="PendingDispensaryCtrl" ng-init="getPendingDispensaries()">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>  
+                        <th><a href="#" ng-click="order('name')">Name</a></th>
+                        <th><a href="#" ng-click="order('phoneNumber')">Phone number</a></th>
+                        <th><a href="#" ng-click="order('email')">Email</a></th>
+                        <th><a href="#" ng-click="order('website')">Website</a></th>
+                        <th><a href="#" ng-click="order('type')">Type</a></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="d in pendingDispensaries | orderBy:predicate:reverse">
+                        <td><a href="#" ng-click="ViewDispensaryInfo(d)"> {{ d.name }} </a></td>
+                        <td>{{d.phoneNumber}}</td>
+                        <td>{{d.email}}</td>
+                        <td>{{d.website}}</td>
+                        <td>{{d.type}}</td>
+                        @*<td><input type="button" class="btn btn-success" value="Verify" ng-click="ViewDispensaryInfo(d)" /></td>*@
+                        <td>
+                            <div class="dropdown">
+                                <button id="dispenceriesActionsButton" class="btn btn-info" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Actions
+                                    <span class="caret"></span>
+                                </button>
+                                <ul class="dropdown-menu" aria-labelledby="dispenceriesActionsButton">
+
+                                    @if (User.IsInRole("GlobalAdmin"))
+                                    {
+                                        @*<li>
+                                <a ng-if="d.isHidden==false" ng-click="hideDispensary(d.id)">Hide</a>
+                            </li>
+                            <li>
+                                <a ng-if="d.isHidden==true" ng-click="showDispensary(d.id)">Show</a>
+                            </li>*@
+                                        <li>
+                                            <a ng-click="approve(d.id)">Approve</a>
+                                        </li>
+                                        <li>
+                                            <a ng-click="reject(d.id)">Reject</a>
+                                        </li>
+
+                                    }
+                                </ul>
+                            </div>
+                        </td>
+
+                    </tr>
+                </tbody>
+            </table>
+
+
+            <script type="text/ng-template" id="dipensaryInfo.html">
+
+                <div class="modal-header">
+                    <h3 class="modal-title">Dispensary Information</h3>
+                </div>
+
+                <div class="modal-body form container" style="width:1100px">
+                    @*FIRST COLUMN*@
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="name">Name</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.name}}" disabled="disabled" class="form-control" id="name" name="name" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="phoneNumber">Phone number</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.phoneNumber}}" disabled="disabled" class="form-control" id="phoneNumber" name="phoneNumber" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="email">Email</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.email}}" class="form-control" disabled="disabled" id="email" name="email" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="website">Website</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.website}}" disabled="disabled" class="form-control" id="website" name="website" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="type">Type</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.type}}" disabled="disabled" class="form-control" id="website" name="website" />
+                            </div>
+                        </div>
+
+                    </div>
+
+
+                    @*SECOND COLUMN*@
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="addressLine">Address line</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.address.address1}}" disabled="disabled" class="form-control" id="addressLine" name="addressLine" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="unitNo">Unit #</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.address.address2}}" class="form-control" disabled="disabled" id="unitNo" name="nunitNoame" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="city">City</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.address.city}}" class="form-control" disabled="disabled" id="city" name="city" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="state">State</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.address.state}}" class="form-control" disabled="disabled" id="state" name="state" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="country">Country</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{dispensary.address.country}}" class="form-control" disabled="disabled" id="country" name="country" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer  text-right">                    
+                    <input type="button" value="Cancel" class="btn btn-danger" ng-click="cancel()" />                    
+                    @*<div class="col-md-4">
+                <input type="button" class="btn btn-success btn-block" value="Approve" ng-click="approve()" />
+            </div>
+            <div class="col-md-4">
+                <input type="button" class="btn btn-danger btn-block" value="Reject" ng-click="reject()" />
+            </div>*@
+                </div>
+            </script>
+        </div>
+    </div>
+</div>
+    
+
+

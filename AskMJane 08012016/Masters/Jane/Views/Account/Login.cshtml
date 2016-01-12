@@ -1,0 +1,89 @@
+﻿@using Jane.Web.Models
+@model Jane.Web.Models.LoginViewModel
+@{
+    ViewBag.Title = "Log in";
+}
+
+<div class="container login-wrapper" ng-controller="LoginCtrl">
+    <div class="row">
+        <div class="col-sm-6 content">
+            <h1>Welcome Back!</h1>
+
+            <p class="hidden-xs">If you need anything just #AskJane! She's here to help!</p>
+        </div>
+
+        <div class="col-sm-6 login">
+            <h2></h2>
+            <h4>Sign in to your account</h4>
+            <form name="form" class="form form-horizontal" ng-submit="login(form, form.$valid)" novalidate>
+
+                @if (Session["admin"] != null)
+                {
+                    <div style="visibility: hidden;">{{redirect='Admin'}}</div>
+                }
+
+                <div class="row">
+                    <div class="col-md-offset-2 col-md-10">
+                        <alert ng-repeat="alert in alerts" type="danger" close="closeAlert($index)">{{alert.msg}}</alert>
+                    </div>
+                </div>
+                <div class="clearfix">
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="Email">Email</label>
+                        <div class="col-md-10">
+                            <input type="text" value="" aria-required ng-model="username" ng-required="true" class="form-control" placeholder="jane@example.com" id="Email" name="Email" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-md-2 control-label" for="Password">Password</label>
+                        <div class="col-md-10">
+                            <input type="password" value="" ng-model="password" ng-required="true" class="form-control" id="Password" name="Password" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-offset-2 col-md-5">
+                            <input type="submit" class="btn btn-default btn-block btn-lg" value="Log in" />
+                            <a href="/forgotyourpassword">Forgot my password</a>
+                        </div>
+                        <div class="col-md-5 register">
+                            <p>
+                                Don't have an account? <a href="/register">Register</a>
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+    <div class="col-md-4">
+        <section id="socialLoginForm">
+            @Html.Partial("_ExternalLoginsListPartial", new ExternalLoginListViewModel { Action = "ExternalLogin", ReturnUrl = ViewBag.ReturnUrl })
+        </section>
+    </div>
+</div>
+
+
+<script type="text/javascript">
+    function BeginClient(xhr) {
+        xhr.Accept = "application/json";
+        //xhr.setRequestHeader('__RequestVerificationToken', securityToken);
+        //securityToken = $('[name=__RequestVerificationToken]').val();
+        // xhr.setRequestHeader('__RequestVerificationToken', securityToken);
+    }
+
+    function loginfailure(data) {
+        $('#LoginErrors').text(data.responseJSON.error_description);
+        $('#LoginErrors').show();
+    }
+
+    function loginsuccess(data) {
+        Cookies.set('access_token', data["access_token"]);
+        window.location = "/menu";
+    }
+
+
+</script>
+@section Scripts {
+}

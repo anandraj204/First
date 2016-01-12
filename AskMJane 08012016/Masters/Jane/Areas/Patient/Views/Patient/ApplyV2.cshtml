@@ -1,0 +1,126 @@
+﻿@model dynamic
+
+@{
+    ViewBag.Title = "Jane - Patient Application";
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+}
+
+@section EndOfHead{
+	@Styles.Render("~/Content/css/home/zipcode.css")
+}
+
+
+
+
+<div class="image-wrapper">
+	<div class="background-zip-image"></div>
+	<div class="container-fluid" ng-controller="PatientApplicationCtrl">
+		@if (Request.IsAuthenticated)
+		{
+
+			<div ng-if="user != null">
+
+				<div class="clearfix">
+					<alert type="danger" ng-if="user.patientInfo.approvalStatus == 3">Your application was rejected. Please update the information based on your rejection letter and resubmit.</alert>
+					<alert type="warning" ng-if="user.patientInfo.approvalStatus == 2">Your application has been submitted and is currently being reviewed. Please check back soon.</alert>
+
+				</div>
+
+                <form ng-if="!verificationCodeSent && !user.phoneNumberConfirmed" name="mobilePhoneForm" ng-submit="SendVerificationCode(mobilePhoneForm,mobilePhoneForm.$valid)" novalidate class="vertical-center-area">
+                    <div class="jumbotron short">
+                        <h2>Phone Number</h2>
+                        <p>We need to verify your phone number for delivery. Enter your number and we'll text you your code.</p>
+                        <div class="zipcode-wrapper">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-required="true" placeholder="(555) 555-8888" ng-model="user.phoneNumber" phone-format="user.phoneNumber" name="phonenumber" />
+                                <p ng-if="form.$submitted && form.phonenumber.$error.required || form.phonenumber.$error.invalid " class="text-danger">You must enter a valid phone number</p>
+                            </div>
+                            <button type="submit" class="btn btn-block btn-primary">Send Verification Code</button>
+                        </div>
+                        <p class="small">
+                            <a href="/menu">Skip for now</a>
+                        </p>
+                    </div>
+                </form>
+                <form ng-if="verificationCodeSent && !user.phoneNumberConfirmed" name="confirmPhoneForm" ng-submit="ConfirmPhoneNumber(confirmPhoneForm, confirmPhoneForm.$valid)" novalidate class="vertical-center-area">
+                    <div class="jumbotron short">
+                        <h2>Confirmation Code</h2>
+                        <p>You should be receiving a verification code by text shortly.</p>
+                        <div class="zipcode-wrapper">
+                            <div class="form-group">
+                                <input type="text" class="form-control" ng-required="true" placeholder="Enter Verification Code" ng-model="confirmmodel.code" name="confirmcode" />
+                                <p ng-if="form.$submitted && form.confirmcode.$error.required || form.confirmcode.$error.invalid " class="text-danger">You must enter the confirmation code.</p>
+                            </div>
+                            <button type="submit" class="btn btn-lg btn-primary">Continue</button>
+                        </div>
+                        <p class="small">
+                            Not Working? <a href="/menu">Skip for now</a> <span ng-if="verificationfailed"> Or <a href="/patient/applyv2">Get Another Code</a></span>
+                        </p>
+                    </div>
+                </form>
+                <div ng-if="user.phoneNumberConfirmed" class="required-docs vertical-center-area">
+                    <div class="form-area-dark jumbotron">
+                        <h3>Upload Patient Verification Documents</h3>
+                        <form name="form" class="form" ng-submit="SaveUserInfo(form, form.$valid)" novalidate>
+                            <div class="row">
+                                <div class="form-group col-md-6 photo-id">
+                                    <div class="text-left">
+                                        <label class="col-md-5 col-sm-6 text-right" for="GovernmentId">Government Issued Photo I.D</label>
+                                        <div name="GovernmentId" class="btn btn-primary btn-small" ng-model="idupload" ngf-select="UploadId($file)">Select Photo I.D Image To Upload</div>
+                                    </div>
+                                    <input name="photoid" type="hidden" ng-model="user.patientInfo.driversLicenseImageUrl" ng-required="true" />
+                                    <p ng-if="form.$submitted && form.photoid.$error.required" class="text-danger">You must upload a Government Issued Photo I.D.</p>
+
+                                    <div class="form-group upload-img">
+                                        <img class="img-responsive" ng-src="https://askmjane.s3.amazonaws.com/{{user.patientInfo.driversLicenseImageUrl}}" />
+                                        <!--img class="img-responsive" ngf-src="idupload">-->
+                                    </div>
+
+                                    <div class="btn btn-success" ng-if="user.patientInfo.driversLicenseImageUrl != null && user.patientInfo.driversLicenseImageUrl != ''">Photo ID Upload Completed!</div>
+
+                                </div>
+
+                                <div class="form-group col-md-6 med-card">
+                                    <div class="radio-wrapper">
+                                        <label><input type="radio" ng-model="patientdoctype" value="mmj" /> Medical Marijuana Card</label>
+                                        <label> <input type="radio" ng-model="patientdoctype" value="rx" />  Dr. Recommendation</label> <br />
+                                    </div>
+                                    <div class="text-left">
+                                        <label for="MmjRxImg" class="col-md-5 col-sm-6 text-right">Valid Rx or MMJ license/card</label>
+                                        <div name="GovernmentId" name="MmjRxImg" class="btn btn-primary btn-small" ng-model="rxupload" ngf-select="UploadRx($file)">Select Rx/Mmj Card To Upload</div>
+                                        <input name="recommendation" type="hidden" ng-model="user.patientInfo.recommendationImageUrl" ng-required="true" />
+                                    </div>
+
+                                    <p ng-if="form.$submitted && form.recommendation.$error.required" class="text-danger">You must upload a recommendation.</p>
+
+                                    <div class="form-group upload-img">
+                                        <!-- <img class="img-responsive" ngf-src="rxupload">-->
+
+                                        <img class="img-responsive" ng-src="https://askmjane.s3.amazonaws.com/{{user.patientInfo.recommendationImageUrl}}" />
+                                    </div>
+
+                                    <div class="btn btn-success" ng-if="user.patientInfo.recommendationImageUrl != null && user.patientInfo.recommendationImageUrl != ''">Medical Rx Upload Completed!</div>
+                                </div>
+                            </div>
+                            <div class="form-group bottom-wrapper clearfix">
+                                <button type="submit" value="" class="btn btn-primary btn-lg" name="userInfoSave" id="userInfoSave">Finish</button>
+                                <p>
+                                    <a href="/menu">Skip for now</a>
+                                </p>
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+			</div>
+		}
+		else
+		{
+			<div class="row">
+				I'm not
+			</div>
+		}
+
+
+	</div>
+</div>

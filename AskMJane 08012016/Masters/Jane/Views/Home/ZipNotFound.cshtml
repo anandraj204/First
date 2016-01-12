@@ -1,0 +1,37 @@
+﻿@{
+	Layout = "~/Views/Shared/_LayoutBase.cshtml";
+	ViewBag.Title = "Jane - Connecting patients with highest quality medical marijuana.";
+}
+
+@section EndOfHead{
+	@Styles.Render("~/Content/css/home/zipcode.css")
+}
+
+<div class="image-wrapper">
+	<div class="background-zip-image"></div>
+	<div class="container">
+		<div class="row">
+			<div class="col-xs-12 col-sm-10 col-sm-offset-1 col-md-8 col-md-offset-2">
+				<div class="jumbotron">
+					<h2>We're sorry, but we don't currently deliver to your zip code.</h2>
+					<p>Cast a vote to request delivery coverage in your area.</p>
+					<div class="zipcode-wrapper">
+						<input type="text" value="" name="zip-input" class="zip-input numOnly" autofocus="" placeholder="Zip Code" maxlength="5" required="">
+						<button class="btn btn-lg btn-one zip-submit hidden-xs">Cast Vote</button>
+						<div class="btn-block-wrapper hidden-sm hidden-md hidden-lg">
+							<button class="btn btn-block btn-one zip-submit">Cast Vote</button>
+						</div>
+					</div>
+					<p class="small"><a href="/menu?zipcode=94103">Continue to browse</a></p>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+
+@section scripts{
+	<script src="https://maps.googleapis.com/maps/api/js?v=3.exp"></script>
+	@Scripts.Render("~/Scripts/geo.js")
+}

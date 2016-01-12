@@ -1,0 +1,54 @@
+﻿@{
+    Layout = "~/Views/Shared/_LayoutBase.cshtml";
+    ViewBag.Title = "Jane - Connecting patients with highest quality medical marijuana.";
+}
+
+@section EndOfHead{
+    @Styles.Render("~/Content/css/home/zipcode.css")
+}
+
+<div class="image-wrapper">
+    <div class="background-zip-image"></div>
+    <div class="vertical-center-area">
+        <div class="jumbotron short">
+            <h2>Getting your medical marijuana to you in .</h2>
+            <p>You ask for it, we find it, you recieve it.</p>
+            <div class="zipcode-wrapper">
+                <div class="form-group">
+                    <input type="text" value="" id="tbZipCode" name="zip-input" class="form-control" autofocus="" placeholder="Zip Code" maxlength="5" required="">
+                </div>
+                <button id="btnGetStarted" class="btn btn-lg btn-one zip-submit">Get Started</button>
+            </div>
+            <p class="small">
+                Already have an account? <a href="/login">Login</a>
+            </p>
+        </div>
+    </div>
+</div>
+
+<script language="javascript" type="text/javascript">
+    $(document).ready(function () {
+        function GoToProducts() {
+            var zip = $('#tbZipCode').val();
+
+            if (zip) {
+                window.location.replace("/menu?zip=" + zip);
+            }
+        }
+
+        $('#btnGetStarted').click(function () {
+            GoToProducts();
+        });
+
+        $("#tbZipCode").keyup(function (event) {
+            if (event.keyCode === 13) {
+                GoToProducts();
+            }
+        });
+    });
+</script>
+
+
+@section scripts{
+    @Scripts.Render("~/Scripts/geo.js")
+}

@@ -1,0 +1,111 @@
+﻿@{
+    ViewBag.Title = "Jane - Roles Manager";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Dispensary Dashboard</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content" ng-controller="DispensaryDashboardCtrl">
+    <div class="row">
+        <div class="col-lg-6">
+            <div class="widget navy-bg no-padding">
+                <div class="p-m">
+                    <h1 class="m-xs">$ 1,540</h1>
+
+                    <h3 class="font-bold no-margins">
+                        Annual income
+                    </h3>
+                    <small></small>
+                </div>
+                <div class="flot-chart">
+                    <div class="flot-chart-content" id="flot-chart1" style="padding: 0px; position: relative;">
+                        <canvas class="flot-base" width="802" height="100" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 802px; height: 100px;"></canvas><canvas class="flot-overlay" width="802" height="100" style="direction: ltr; position: absolute; left: 0px; top: 0px; width: 802px; height: 100px;"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <a href="~/admin/inventory?dispensaryId=2">
+            <div class="col-sm-3">
+                <div class="widget style1 navy-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-9">
+                            <i class="fa fa-cube fa-3x"></i>
+                            <h3>Number of products</h3>
+                        </div>
+                        <div class="col-xs-3 text-right">
+                            <h2 class="font-bold">217</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+        <a href="~/admin/orders?dispensaryId=2">
+            <div class="col-sm-3">
+                <div class="widget style1 navy-bg">
+                    <div class="row vertical-align">
+                        <div class="col-xs-9">
+                            <i class="fa fa-shopping-cart fa-3x"></i>
+                            <h3>Number of orders</h3>
+                        </div>
+                        <div class="col-xs-3 text-right">
+                            <h2 class="font-bold">217</h2>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </a>
+    </div>
+</div>
+
+<script src="~/scripts/flot/jquery.flot.js"></script>
+<script src="~/scripts/flot/jquery.flot.tooltip.min.js"></script>
+<script src="~/scripts/flot/jquery.flot.resize.js"></script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        var d1 = [[1262304000000, 6], [1264982400000, 3057], [1267401600000, 20434], [1270080000000, 31982], [1272672000000, 26602], [1275350400000, 27826], [1277942400000, 24302], [1280620800000, 24237], [1283299200000, 21004], [1285891200000, 12144], [1288569600000, 10577], [1291161600000, 10295]];
+        var d2 = [[1262304000000, 5], [1264982400000, 200], [1267401600000, 1605], [1270080000000, 6129], [1272672000000, 11643], [1275350400000, 19055], [1277942400000, 30062], [1280620800000, 39197], [1283299200000, 37000], [1285891200000, 27000], [1288569600000, 21000], [1291161600000, 17000]];
+
+        var data1 = [
+            { label: "Data 1", data: d1, color: '#17a084' },
+            { label: "Data 2", data: d2, color: '#127e68' }
+        ];
+        $.plot($("#flot-chart1"), data1, {
+            xaxis: {
+                tickDecimals: 0
+            },
+            series: {
+                lines: {
+                    show: true,
+                    fill: true,
+                    fillColor: {
+                        colors: [
+                            {
+                                opacity: 1
+                            }, {
+                                opacity: 1
+                            }
+                        ]
+                    }
+                },
+                points: {
+                    width: 0.1,
+                    show: false
+                }
+            },
+            grid: {
+                show: false,
+                borderWidth: 0
+            },
+            legend: {
+                show: false
+            }
+        });
+    });
+</script>
+
+

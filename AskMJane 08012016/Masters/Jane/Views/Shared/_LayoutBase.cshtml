@@ -1,0 +1,305 @@
+﻿@using System.Web;
+@using System.Web.Optimization;
+@{
+    ViewBag.Title = "Jane - Connecting patients with highest quality medical marijuana.";
+}
+<html>
+<head>
+    <script type="text/javascript">
+        !function () {
+            var analytics = window.analytics = window.analytics || []; if (!analytics.initialize) if (analytics.invoked) window.console && console.error && console.error("Segment snippet included twice."); else {
+                analytics.invoked = !0; analytics.methods = ["trackSubmit", "trackClick", "trackLink", "trackForm", "pageview", "identify", "reset", "group", "track", "ready", "alias", "page", "once", "off", "on"]; analytics.factory = function (t) { return function () { var e = Array.prototype.slice.call(arguments); e.unshift(t); analytics.push(e); return analytics } }; for (var t = 0; t < analytics.methods.length; t++) { var e = analytics.methods[t]; analytics[e] = analytics.factory(e) } analytics.load = function (t) { var e = document.createElement("script"); e.type = "text/javascript"; e.async = !0; e.src = ("https:" === document.location.protocol ? "https://" : "http://") + "cdn.segment.com/analytics.js/v1/" + t + "/analytics.min.js"; var n = document.getElementsByTagName("script")[0]; n.parentNode.insertBefore(e, n) }; analytics.SNIPPET_VERSION = "3.1.0";
+                analytics.load("PcRnZCTXA7I518P45G35nJEiG0TEcBCb");
+                analytics.page()
+            }
+        }();
+    </script>
+    @RenderSection("TopOfHeadBase", false)
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>@ViewBag.Title</title>
+    <link rel="shortcut icon" href="~/Content/images/favicon.ico" />
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0;">
+
+    @Scripts.Render("~/bundles/modernizr")
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css">
+    <link href='https://fonts.googleapis.com/css?family=Raleway:300,400,500,600|Roboto:400,100,500' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+
+    @Styles.Render("~/bundles/cssbundle")
+
+    @RenderSection("EndOfHead", required: false)
+    <!-- Analytics includes-->
+    <script type="text/javascript">
+        window.heap = window.heap || [], heap.load = function (t, e) {
+            window.heap.appid = t, window.heap.config = e;
+            var a = document.createElement("script");
+            a.type = "text/javascript", a.async = !0, a.src = ("https:" === document.location.protocol ? "https:" : "http:") + "//cdn.heapanalytics.com/js/heap-" + t + ".js";
+            var n = document.getElementsByTagName("script")[0];
+            n.parentNode.insertBefore(a, n);
+            for (var o = function (t) { return function () { heap.push([t].concat(Array.prototype.slice.call(arguments, 0))) } }, p = ["clearEventProperties", "identify", "setEventProperties", "track", "unsetEventProperty"], c = 0; c < p.length; c++) heap[p[c]] = o(p[c])
+        };
+        heap.load("779608688");
+
+        (function (f, b) {
+            if (!b.__SV) {
+                var a, e, i, g;
+                window.mixpanel = b;
+                b._i = [];
+                b.init = function (a, e, d) {
+                    function f(b, h) {
+                        var a = h.split(".");
+                        2 == a.length && (b = b[a[0]], h = a[1]);
+                        b[h] = function () { b.push([h].concat(Array.prototype.slice.call(arguments, 0))) }
+                    }
+
+                    var c = b;
+                    "undefined" !== typeof d ? c = b[d] = [] : d = "mixpanel";
+                    c.people = c.people || [];
+                    c.toString = function (b) {
+                        var a = "mixpanel";
+                        "mixpanel" !== d && (a += "." + d);
+                        b || (a += " (stub)");
+                        return a
+                    };
+                    c.people.toString = function () { return c.toString(1) + ".people (stub)" };
+                    i = "disable track track_pageview track_links track_forms register register_once alias unregister identify name_tag set_config people.set people.set_once people.increment people.append people.union people.track_charge people.clear_charges people.delete_user".split(" ");
+                    for (g = 0; g < i.length; g++) f(c, i[g]);
+                    b._i.push([a, e, d])
+                };
+                b.__SV = 1.2;
+                a = f.createElement("script");
+                a.type = "text/javascript";
+                a.async = !0;
+                a.src = "undefined" !== typeof MIXPANEL_CUSTOM_LIB_URL ? MIXPANEL_CUSTOM_LIB_URL : "//cdn.mxpnl.com/libs/mixpanel-2-latest.min.js";
+                e = f.getElementsByTagName("script")[0];
+                e.parentNode.insertBefore(a, e)
+            }
+        })(document, window.mixpanel || []);
+        mixpanel.init("eb55fc943c6180aae674e1b510aaf620");
+
+
+        (function (i, s, o, g, r, a, m) {
+            i['GoogleAnalyticsObject'] = r; i[r] = i[r] || function () {
+                (i[r].q = i[r].q || []).push(arguments)
+            }, i[r].l = 1 * new Date(); a = s.createElement(o),
+            m = s.getElementsByTagName(o)[0]; a.async = 1; a.src = g; m.parentNode.insertBefore(a, m)
+        })(window, document, 'script', '//www.google-analytics.com/analytics.js', 'ga');
+
+        ga('create', 'UA-66100627-1', 'auto');
+        ga('send', 'pageview');
+
+    </script>
+
+    @Scripts.Render("~/bundles/bootstrap")
+
+</head>
+<body ng-app="AskMJaneAngularApp" ng-controller="MainCtrl">
+
+    @Html.Partial("~/Views/Shared/SmallModalPartial.cshtml")
+    @RenderSection("TopOfBodyBase", required: false)
+    <!--Navigation-->
+    <nav class=" desktop-navbar navbar navbar-default">
+        <div class="container-fluid">
+            <!-- Brand and toggle get grouped for better mobile display -->
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Jane</a>
+                <!--<h4 class="hidden-xs">Connecting patients with the right quality medical marijuana.</h4>-->
+            </div>
+            <div id="mobile-header">
+                <a class="menu-icon" id="responsive-menu-button" href="#sidr-main"><span>Menu</span></a>
+            </div>
+            <!-- Collect the nav links, forms, and other content for toggling -->
+            <div class="desktop-navbar" id="navigation">
+                <ul class="nav navbar-nav">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    <li>
+                        <a href="/menu">Browse</a>
+                    </li>
+                    <li>
+                        <a href="/contact">Contact Us</a>
+                    </li>
+                    @if (Request.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="/myaccount">My Account</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    @if (!Request.IsAuthenticated)
+                    {
+                        <li>
+                            <a href="/login"><i class="fa fa-sign-in"></i> Log In</a>
+                        </li>
+                        <li>
+                            <a href="/register"><i class="fa fa-pencil-square-o"></i> Sign Up</a>
+                        </li>
+                    }
+                    else
+                    {
+                        <li>
+                            <a ng-click="Logout()" href=""><i class="fa fa-sign-out"></i> Log Out</a>
+                        </li>
+                    }
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <form class="search-area">
+                            <input type="search" name="search-input" class="search-input" placeholder="search" id="tbSearch">
+                            <i class="fa fa-search"></i>
+                            <i class="fa fa-times"></i>
+                        </form>
+                    </li>
+                    <li class="hidden-xs"><a href="/cart"><i class="fa fa-shopping-cart"></i><span class="badge" ng-if="badge > 0 " ng-cloak>{{badge}}</span></a></li>
+                </ul>
+            </div>
+            <a class="cart-block visible-xs-block" href="/cart"><i class="fa fa-shopping-cart"></i><span class="badge" ng-if="badge > 0 " ng-cloak>{{badge}}</span></a>
+        </div>
+    </nav>
+
+    <div class="body-content">
+        @RenderSection("ContentBase", required: false)
+        @RenderBody()    
+    </div>
+
+    <!--Footer-->
+    <footer class="footer-wrapper">
+        <div class="container-fluid">
+                <div class="brand visible-xs-block">
+                    <a href="#">Jane</a>
+                    <h4>Connecting patients with the right medical marijuana.</h4>
+                </div>
+                <ul class="footer-links visible-xs-block">
+                    <li><a class="navigation-item" href="/search?zipcode=94103">Browse</a></li>
+                    <li><a class="navigation-item" href="/contact">Contact Us</a></li>
+                    <li><a class="navigation-item" href="/privacy">Privacy Policy</a></li>
+                </ul>
+                <div class="row hidden-xs">
+                    <div class="col-sm-3">
+                        <h4>About Us</h4>
+                        <ul>
+                            <li><a class="navigation-item" href="/about">About Jane</a></li>
+                            <li><a class="navigation-item" href="http://54.175.189.188:1234/wordpress">Blog</a></li>
+                            <li><a class="navigation-item" href="/terms">Terms of Use</a></li>
+                            <li><a class="navigation-item" href="/privacy">Privacy Policy</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3">
+                        <h4>Partner With Jane</h4>
+                        <ul>
+                            <li><a href="/Dispensary/Register">Partners</a></li>
+                            <li><a href="/jobs">Jobs</a></li>
+                            <li><a class="navigation-item" href="/contact">Contact Us</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3">
+                        <h4>Popular Products</h4>
+                        <ul>
+                            <li><a href="/product/details/3">El Niño</a></li>
+                            <li><a href="/product/details/8">Pineapple Chunk</a></li>
+                            <li><a href="/product/details/18">OG Real</a></li>
+                        </ul>
+                    </div>
+                    <div class="col-sm-3">
+                        <h4 class="text-left">Dispensaries</h4>
+                        <ul class="text-left">
+                            <li><a href="/dispensary/details/2">Portland Wellness</a></li>
+                            <li><a href="/dispensary/details/3">Canuvo</a></li>
+                            <li><a href="/dispensary/details/4">Maine Organic</a></li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="hidden-xs text-center">
+                    <ul class="social-bar">
+                        <li>
+                            <a href="https://www.facebook.com/AskMJane" target="_blank" class="facebook">
+                                <span class="fa fa-facebook base"></span>
+                                <span class="fa fa-facebook darken"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://twitter.com/AskMJane" target="_blank" class="twitter">
+                                <span class="fa fa-twitter base"></span>
+                                <span class="fa fa-twitter darken"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://instagram.com/AskMJane" target="_blank" class="instagram">
+                                <span class="fa fa-instagram base"></span>
+                                <span class="fa fa-instagram darken"></span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="http://pinterest.com/AskMJane" target="_blank" class="pintrest">
+                                @*<span class="fa fa-pinterest"></span>
+                                <span class="fa fa-pinterest"></span>*@
+                                <img src="/Content/images/pintrest.png" alt="" />
+                            </a>
+                        </li>
+                        <li>
+                            <a href="https://massroots.com/user/AskMJane" target="_blank" class="massroots">
+                                <span class="base">
+                                    <img src="~/Content/img/massroots.png" />
+                                </span>
+                                <span class="darken">
+                                    <img src="~/Content/img/massroots.png" />
+                                </span>
+                            </a>
+                        </li>
+
+                    </ul>
+                   
+                </div>
+                
+                <div class="copyright row hidden-xs text-center">
+                    <div>
+                        Copyright © @DateTime.Now.AddYears(-1).Year-@DateTime.Now.Year GreenToGo Inc. All Rights Reserved.
+                        <br/>
+                    All GreenToGo Inc. marks contained herein are trademarks of GreenToGo Inc. and/or its affiliated companies.
+                    </div>
+
+                </div>
+            </div>
+    </footer>
+    <!--End Navigation-->
+    @RenderSection("EndOfBodyBase", required: false)
+
+    @Scripts.Render("~/bundles/angular")
+
+    @RenderSection("scripts", required: false)
+
+    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?libraries=places"></script>
+    <script>
+        (function (app) {
+            app.constant('ApiAddress', '@Html.Raw(ViewBag.ApiAddress)');
+        })(angular.module('AskMJaneAngularApp'));
+       
+    </script>
+    <!-- Start of Async HubSpot Analytics Code -->
+  <script type="text/javascript">
+    (function(d,s,i,r) {
+      if (d.getElementById(i)){return;}
+      var n=d.createElement(s),e=d.getElementsByTagName(s)[0];
+      n.id=i;n.src='//js.hs-analytics.net/analytics/'+(Math.ceil(new Date()/r)*r)+'/1853982.js';
+      e.parentNode.insertBefore(n, e);
+    })(document,"script","hs-analytics",300000);
+    </script>
+    <!-- End of Async HubSpot Analytics Code -->
+    <script>
+        $(document).ready(function () {
+            $('#responsive-menu-button').sidr({
+                name: 'sidr-main',
+                source: '#navigation',
+                side: 'right',
+                renaming: false
+            });
+
+        });
+    </script>
+</body>
+</html>

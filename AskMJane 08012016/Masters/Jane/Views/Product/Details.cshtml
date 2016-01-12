@@ -1,0 +1,95 @@
+﻿@using Newtonsoft.Json
+@using RestSharp.Extensions
+@model Jane.Core.Models.DispensaryProductModel
+@{
+    ViewBag.Title = "Product - Details";
+    Layout = "../Shared/_LayoutBase.cshtml";
+}
+@section TopOfHeadBase{
+    @Styles.Render("~/Content/css/fotorama.css")
+}
+<div id="holder" ng-controller="ProductCtrl" ng-init="init(@JsonConvert.SerializeObject(@Model))">
+    <div class="gallery-area">
+        <div class="gallery-frame">
+            <div class="fotorama" data-fit="cover" data-loop="true" data-auto="false">
+                <img ng-src="{{photo.Url}}" ng-repeat="photo in product.MasterVariant.Photos" on-last-repeat>
+            </div>            
+        </div>
+    </div>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-8">
+                <h1>{{ product.Name }}</h1>
+                <p class="large-size">Dispensary: <a href="/dispensary/details/{{product.Dispensary.Id}}">{{ product.Dispensary.Name }}</a></p>
+            </div>
+            <div class="col-sm-4">
+                <div class="add-to-cart static">
+                    <div class="text-area clearfix">
+                        <div class="text-holder">
+                                <select name="QuantitySelect" ng-model="product.SelectedQuantity" ng-options="product.MasterVariant.VariantPricing.indexOf(opt)  as
+                            displayPrice(opt,product.MasterVariant.IsPricedByWeight) for (idx,opt) in product.MasterVariant.VariantPricing"
+                                        class="form-control"></select>
+                        </div>
+                        <button type="button" class="btn btn-default" ng-click="addToCart(product)">
+                            <i class="fa fa-shopping-cart"></i>
+                            Add to cart
+                        </button>
+                    </div>
+                </div>    
+            </div>
+        </div>
+        <section class="content-section">
+            <h2>Description</h2>
+            <p>{{ product.Description }}</p>
+            <div class="media-area" ng-if="product.YouTubeVideoUrl">
+                <iframe width="100%" height="100%" ng-src="{{ trustSrc(product.YouTubeVideoUrl) }}" frameborder="0" allowfullscreen></iframe>
+            </div>
+        </section>
+        <section class="content-section row">
+            <div class="col-sm-4" ng-if="product.Effects.length > 0">
+                <h2>Effects</h2>
+                <ul class="list-categories">
+                    <li ng-repeat="effect in product.Effects" class="category-item tooltip-area" ng-style="{'border-color': product.ProductCategory.Color, 'color': product.ProductCategory.Color}">
+                        <span class="tooltip-item">{{ effect.Name }}</span>
+                        <span ng-if="effect.Description.length > 0 &&  effect.Description != 'none'" class="tooltip-content">
+                            <span class="tooltip-content-holder">
+                                {{ effect.Description }}
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-4" ng-if="product.Symptoms.length > 0">
+                <h2>Symptoms</h2>
+                <ul class="list-categories">
+                    <li ng-repeat="symptom in product.Symptoms" class="category-item tooltip-area" ng-style="{'border-color': product.ProductCategory.Color, 'color': product.ProductCategory.Color}">
+                        <span class="tooltip-item">{{ symptom.Name }}</span>
+                        <span ng-if="symptom.Description.length > 0  &&  symptom.Description != 'none'" class="tooltip-content">
+                            <span class="tooltip-content-holder">
+                                {{ symptom.Description }}
+                            </span>
+                        </span>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-sm-4">
+                <h2>Category</h2>
+                <div class="list-categories">
+                    <p class="category-item tooltip-area" ng-style="{'border-color': product.ProductCategory.Color, 'color': product.ProductCategory.Color }">
+                        <span class="tooltip-item">{{ product.ProductCategory.Name }}</span>
+                        @*<span class="tooltip-content">
+                <span class="tooltip-content-holder">
+                    lorem ipsum
+                </span>
+            </span>*@
+                    </p>
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+@section scripts{
+    @Scripts.Render("~/Scripts/fotorama.js")
+}

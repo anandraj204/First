@@ -1,0 +1,211 @@
+﻿
+
+<div class="row">
+    <div class="col-md-10 col-md-offset-1 account-area">
+    </div>
+</div>
+
+
+<ul class="account-tabs">
+    <li class="active"><a data-toggle="tab" href="#basicInfo">Basic Info / Address info</a></li>
+    <li ng-hide="hideDocuments"><a data-toggle="tab" href="#stateIdVerificationDocuments">State ID / Verification Documents</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="basicInfo" class="tab-pane fade in active">
+        <form name="updateform" class="form form-horizontal" ng-submit="registerDispensary(updateform, updateform.$valid)" novalidate>
+            <h4 class="col-xs-12">Register Dispensary</h4>
+            <div class="col-md-offset-2 col-md-10">
+                <alert ng-repeat="alert in alerts" type="danger">{{alert.msg}}</alert>
+            </div>
+            <div class="clearfix">
+                @*FIRST COLUMN*@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="name">Name</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Name}}" ng-model="model.Name" class="form-control" placeholder="Name" id="name" name="name" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="phoneNumber">Phone number</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.PhoneNumber}}" ng-model="model.PhoneNumber" class="form-control" placeholder="Phone Number" id="phoneNumber" name="phoneNumber" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="email">Email</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Email}}" ng-model="model.Email" class="form-control" placeholder="Email" id="email" name="email" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="website">Website</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Website}}" ng-model="model.Website" class="form-control" placeholder="Website" id="website" name="website" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="type">Type</label>
+                        <div class="col-sm-9">
+                            <select name="type" ng-model="model.Type" id="type" class="form-control">
+                                <option value="Medicinal">Medicinal</option>
+                                <option value="Recreational">Recreational</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-hide="hidePassword">
+                        <label class="col-sm-3 control-label" for="password">Password</label>
+                        <div class="col-sm-9">
+                            <input type="password" value="{{model.Password}}" ng-model="model.Password" class="form-control" placeholder="Password" id="password" name="password" />
+                        </div>
+                    </div>
+                </div>
+                @*SECOND COLUMN*@
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="addressLine">Address line</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Address.Address1}}" ng-model="model.Address.Address1" class="form-control" placeholder="Address line" id="addressLine" name="addressLine" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="unitNo">Unit #</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Address.Address2}}" ng-model="model.Address.Address2" class="form-control" placeholder="Unit NO" id="unitNo" name="nunitNoame" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="city">City</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Address.City}}" ng-model="model.Address.City" class="form-control" placeholder="Name" id="city" name="city" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="state">State</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Address.State}}" ng-model="model.Address.State" class="form-control" placeholder="State" id="state" name="state" />
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="col-sm-3 control-label" for="country">Country</label>
+                        <div class="col-sm-9">
+                            <input type="text" value="{{model.Address.Country}}" ng-model="model.Address.Country" class="form-control" placeholder="Country" id="country" name="country" />
+                        </div>
+                    </div>
+
+                    <div class="form-group" ng-hide="hidePassword">
+                        <label class="col-sm-3 control-label" for="confirmPassword">Confirm password</label>
+                        <div class="col-sm-9">
+                            <input type="password" value="{{model.ConfirmPassword}}" ng-model="model.ConfirmPassword" class="form-control" placeholder="Confirm password" id="confirmPassword" name="confirmPassword" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="clearfix">
+                <div class="text-right col-xs-12">
+                    <input type="submit" class="btn btn-success" value="Submit"/>
+                </div>
+            </div>
+
+        </form>
+        <div ng-show="loading" class="loader">
+            <img src="/Content/images/loader.gif">
+        </div>
+    </div>
+    <div id="stateIdVerificationDocuments" class="tab-pane fade">
+        <div class="clearfix">
+            <div class="col-md-6">
+                <form class="form form-horizontal">
+                    <h4>State ID</h4>
+                    <div class="clearfix">
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="idNumber">ID #</label>
+                            <div class="col-sm-9">
+                                <input type="text" value="{{model.IdNumber}}" ng-model="model.IdNumber" class="form-control" placeholder="ID number" id="idNumber" name="idNumber"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-sm-3 control-label" for="experationDate">Experation Date</label>
+                            <div class="col-sm-9">
+                                <input type="date" value="{{model.ExperationDate}}" ng-model="model.ExperationDate" class="form-control" placeholder="yyyy-MM-dd" id="experationDate" name="experationDate" />
+                            </div>
+                        </div>
+
+                        <div class="text-right">
+                            <input type="submit" class="btn btn-success" value="Save" style="width: 100px" ng-click="updateLicense()" />
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="col-md-6">
+                <form name="documentsform" class="form form-horizontal" novalidate>
+                    <h4>Verification documents</h4>
+                    <div class="clearfix text-center">
+                        <div class="well">
+
+                            <label class="govt-id-label" for="GovernmentId">Government Issued Photo ID</label>
+                            <div name="GovernmentId" class="btn btn-primary" ng-model="idupload" ngf-select="UploadId($file)">Select Photo</div>
+
+                            <input name="photoid" type="hidden" ng-model="model.driversLicenseImageUrl" ng-required="true" />
+                            <p ng-if="form.$submitted && form.photoid.$error.required" class="text-danger">You must upload a Government Issued Photo ID</p>
+
+                            <div class="upload-img text-center">
+                                <img class="img-responsive" style="padding-top:10px;padding-bottom:10px;" ng-src="{{model.driversLicenseImageUrl}}" />
+                                <!--img class="img-responsive" ngf-src="idupload">-->
+                            </div>
+
+                            <alert class="alert-success text-center" ng-if="model.driversLicenseImageUrl != null && model.driversLicenseImageUrl != ''">Photo ID Upload Successful!</alert>
+                        </div>
+
+                        <div class="well med-card">
+                            <div style="text-align:left;">
+                                <div class="toggle-area">
+                                    <label for="chk1" class="label">Medical Marijuana Card</label>
+                                    <input id="chk1" type="checkbox" class="tgl tgl-light" />
+                                    <label class="tgl-btn" for="chk1"></label>
+                                    <label for="chk1" class="label">Doctor Recommendation</label>
+                                </div>
+                            </div>
+                            <div>
+                                <label for="MmjRxImg" class="">Valid Rx or MMJ license/card</label>
+                                <div name="GovernmentId" name="MmjRxImg" class="btn btn-primary " ng-model="rxupload" ngf-select="UploadRx($file)">Select Card</div>
+                                <input name="recommendation" type="hidden" ng-model="model.recommendationImageUrl" ng-required="true" />
+                            </div>
+
+
+
+                            <p ng-if="form.$submitted && form.recommendation.$error.required" class="text-danger">You must upload a recommendation.</p>
+
+                            <div class="upload-img text-center">
+                                <!-- <img class="img-responsive" ngf-src="rxupload">-->
+
+                                <img class="img-responsive" style="padding-top:10px;padding-bottom:10px;" ng-src="{{model.recommendationImageUrl}}" />
+                            </div>
+
+                            <alert class="alert-success text-center" ng-if="model.recommendationImageUrl != null && model.recommendationImageUrl != ''">Medical Rx Upload Completed!</alert>
+                        </div>
+                    </div>
+
+                    <div class="text-right">
+                        <button type="submit" value="" class="btn btn-success" name="userInfoSave" id="userInfoSave" ng-click="updateDocuments()">Save</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+

@@ -1,0 +1,247 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F2EE9417-AEC3-406A-A490-40B4F84DA11D}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Jane.Data</RootNamespace>
+    <AssemblyName>Jane.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SolutionDir Condition="$(SolutionDir) == '' Or $(SolutionDir) == '*Undefined*'">..\</SolutionDir>
+    <RestorePackages>true</RestorePackages>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Staging|AnyCPU' ">
+    <OutputPath>bin\Stagin\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="Antlr3.Runtime">
+      <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="log4net">
+      <HintPath>..\packages\log4net.2.0.3\lib\net40-full\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Core">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Core.2.2.1\lib\net45\Microsoft.AspNet.Identity.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.EntityFramework">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.EntityFramework.2.2.1\lib\net45\Microsoft.AspNet.Identity.EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.AspNet.Identity.Owin">
+      <HintPath>..\packages\Microsoft.AspNet.Identity.Owin.2.2.1\lib\net45\Microsoft.AspNet.Identity.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.3.0.1\lib\net45\Microsoft.Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.3.0.1\lib\net45\Microsoft.Owin.Security.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Cookies, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.Cookies.3.0.1\lib\net45\Microsoft.Owin.Security.Cookies.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.Jwt">
+      <HintPath>..\packages\Microsoft.Owin.Security.Jwt.3.0.1\lib\net45\Microsoft.Owin.Security.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Owin.Security.OAuth, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Microsoft.Owin.Security.OAuth.3.0.1\lib\net45\Microsoft.Owin.Security.OAuth.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Web.Infrastructure, Version=1.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <Private>True</Private>
+      <HintPath>..\packages\Microsoft.Web.Infrastructure.1.0.0.0\lib\net40\Microsoft.Web.Infrastructure.dll</HintPath>
+    </Reference>
+    <Reference Include="Mono.Security, Version=4.0.0.0, Culture=neutral, PublicKeyToken=0738eb9f132ed756, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.2.2.6\lib\net45\Mono.Security.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="Npgsql, Version=2.2.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.2.2.6\lib\net45\Npgsql.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Npgsql.EntityFramework, Version=2.2.6.0, Culture=neutral, PublicKeyToken=5d8b90d52f46fda7, processorArchitecture=MSIL">
+      <HintPath>..\packages\Npgsql.EntityFramework.2.2.6\lib\net45\Npgsql.EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Owin">
+      <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.IdentityModel" />
+    <Reference Include="System.IdentityModel.Tokens.Jwt">
+      <HintPath>..\packages\System.IdentityModel.Tokens.Jwt.4.0.2.206221351\lib\net45\System.IdentityModel.Tokens.Jwt.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Web" />
+    <Reference Include="System.Web.Optimization">
+      <HintPath>..\packages\Microsoft.AspNet.Web.Optimization.1.1.3\lib\net40\System.Web.Optimization.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Thinktecture.IdentityModel.Core">
+      <HintPath>..\packages\Thinktecture.IdentityModel.Core.1.4.0\lib\net45\Thinktecture.IdentityModel.Core.dll</HintPath>
+    </Reference>
+    <Reference Include="WebGrease">
+      <HintPath>..\packages\WebGrease.1.5.2\lib\WebGrease.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="EntityFramework\Contexts\HGContext.cs" />
+    <Compile Include="EntityFramework\Entities\Address.cs" />
+    <Compile Include="EntityFramework\Entities\BaseEntity.cs" />
+    <Compile Include="EntityFramework\Entities\Dispensary.cs" />
+    <Compile Include="EntityFramework\Entities\DispensaryInvite.cs" />
+    <Compile Include="EntityFramework\Entities\DispensaryProduct.cs" />
+    <Compile Include="EntityFramework\Entities\DispensaryProductVariantOrder.cs" />
+    <Compile Include="EntityFramework\Entities\DispensaryProductVariant.cs" />
+    <Compile Include="EntityFramework\Entities\DispensaryStaff.cs" />
+    <Compile Include="EntityFramework\Entities\Effect.cs" />
+    <Compile Include="EntityFramework\Entities\Flavor.cs" />
+    <Compile Include="EntityFramework\Entities\File.cs" />
+    <Compile Include="EntityFramework\Entities\Invite.cs" />
+    <Compile Include="EntityFramework\Entities\OAuthClient.cs" />
+    <Compile Include="EntityFramework\Entities\Order.cs" />
+    <Compile Include="EntityFramework\Entities\PatientInfo.cs" />
+    <Compile Include="EntityFramework\Entities\PendingDispensary.cs" />
+    <Compile Include="EntityFramework\Entities\Product.cs" />
+    <Compile Include="EntityFramework\Entities\ProductCategory.cs" />
+    <Compile Include="EntityFramework\Entities\ProductReview.cs" />
+    <Compile Include="EntityFramework\Entities\ProductReviewEffect.cs" />
+    <Compile Include="EntityFramework\Entities\ProductReviewFlavor.cs" />
+    <Compile Include="EntityFramework\Entities\Role.cs" />
+    <Compile Include="EntityFramework\Entities\Session.cs" />
+    <Compile Include="EntityFramework\Entities\Symptom.cs" />
+    <Compile Include="EntityFramework\Entities\Transaction.cs" />
+    <Compile Include="EntityFramework\Entities\User.cs" />
+    <Compile Include="EntityFramework\Entities\UserClaim.cs" />
+    <Compile Include="EntityFramework\Entities\UserLogin.cs" />
+    <Compile Include="EntityFramework\Entities\UserRole.cs" />
+    <Compile Include="EntityFramework\Entities\UserSession.cs" />
+    <Compile Include="EntityFramework\Entities\Wallet.cs" />
+    <Compile Include="EntityFramework\Entities\ZipCode.cs" />
+    <Compile Include="EntityFramework\Managers\ApplicationOAuthProvider.cs" />
+    <Compile Include="EntityFramework\Managers\ApplicationSignInManager.cs" />
+    <Compile Include="EntityFramework\Managers\CustomJwtFormat.cs" />
+    <Compile Include="EntityFramework\Managers\HgRoleManager.cs" />
+    <Compile Include="EntityFramework\Managers\HgRoleStore.cs" />
+    <Compile Include="EntityFramework\Managers\HgUserManager.cs" />
+    <Compile Include="EntityFramework\Managers\HgUserStore.cs" />
+    <Compile Include="Migrations\201511070938114_InitiliazeDatabase.cs" />
+    <Compile Include="Migrations\201511070938114_InitiliazeDatabase.Designer.cs">
+      <DependentUpon>201511070938114_InitiliazeDatabase.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511260941239_AddIsHiddenToDispensary.cs" />
+    <Compile Include="Migrations\201511260941239_AddIsHiddenToDispensary.Designer.cs">
+      <DependentUpon>201511260941239_AddIsHiddenToDispensary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512031832591_AddTypeToDispensary.cs" />
+    <Compile Include="Migrations\201512031832591_AddTypeToDispensary.Designer.cs">
+      <DependentUpon>201512031832591_AddTypeToDispensary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512041629208_AddPendingDispensaryEntity.cs" />
+    <Compile Include="Migrations\201512041629208_AddPendingDispensaryEntity.Designer.cs">
+      <DependentUpon>201512041629208_AddPendingDispensaryEntity.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512041747298_AddUrlToDispensaryPending.cs" />
+    <Compile Include="Migrations\201512041747298_AddUrlToDispensaryPending.Designer.cs">
+      <DependentUpon>201512041747298_AddUrlToDispensaryPending.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201512052229482_AddUserIdToDispensary.cs" />
+    <Compile Include="Migrations\201512052229482_AddUserIdToDispensary.Designer.cs">
+      <DependentUpon>201512052229482_AddUserIdToDispensary.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Jane.Core\Jane.Core.csproj">
+      <Project>{DD1ECB03-5485-4ACD-97DA-870422F26A64}</Project>
+      <Name>Jane.Core</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201511070938114_InitiliazeDatabase.resx">
+      <DependentUpon>201511070938114_InitiliazeDatabase.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511260941239_AddIsHiddenToDispensary.resx">
+      <DependentUpon>201511260941239_AddIsHiddenToDispensary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512031832591_AddTypeToDispensary.resx">
+      <DependentUpon>201512031832591_AddTypeToDispensary.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512041629208_AddPendingDispensaryEntity.resx">
+      <DependentUpon>201512041629208_AddPendingDispensaryEntity.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512041747298_AddUrlToDispensaryPending.resx">
+      <DependentUpon>201512041747298_AddUrlToDispensaryPending.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201512052229482_AddUserIdToDispensary.resx">
+      <DependentUpon>201512052229482_AddUserIdToDispensary.cs</DependentUpon>
+    </EmbeddedResource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <Import Project="..\packages\BuildWebCompiler.1.2.120\build\BuildWebCompiler.targets" Condition="Exists('..\packages\BuildWebCompiler.1.2.120\build\BuildWebCompiler.targets')" />
+  <Import Project="$(SolutionDir)\.nuget\NuGet.targets" Condition="Exists('$(SolutionDir)\.nuget\NuGet.targets')" />
+  <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
+    <PropertyGroup>
+      <ErrorText>This project references NuGet package(s) that are missing on this computer. Enable NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
+    </PropertyGroup>
+    <Error Condition="!Exists('$(SolutionDir)\.nuget\NuGet.targets')" Text="$([System.String]::Format('$(ErrorText)', '$(SolutionDir)\.nuget\NuGet.targets'))" />
+  </Target>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

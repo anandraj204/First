@@ -1,0 +1,356 @@
+﻿@using Newtonsoft.Json
+@model List<Jane.Core.Models.DispensaryModel>
+@{
+    ViewBag.Title = "Inventory";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Inventory</h2>
+    </div>
+</div>
+<div class="wrapper wrapper-content">
+    <div id="InventoryCtrl" ng-controller="InventoryCtrl" class="ibox">
+        <div class="ibox-content dataTables_wrapper">
+            <div class="row">
+                <div class="col-sm-6">
+                    <button class="btn btn-primary" type="button" ng-click="addNewInventory()">Add Inventory</button>
+                </div>
+                <div class="col-sm-6">
+                    <div class="dataTables_filter">
+                        <label>
+                            Manage Inventory for
+                            <select name="DispensarySelect" class="form-control" ng-model="CurrentDispensary" ng-change="updateCurrentDispensary()" ng-options="opt.id as opt.name for opt in dispensaries"></select>
+                        </label>
+                        
+                    </div>
+                </div>
+            </div>
+            <table id="inventoryGrid" class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>
+                            Product Name
+                            <input type="text" value="" class="form-control small-size"
+                                   ng-model="model.filterName" name="ProductNameFilter" ng-change="updateCurrentDispensary();" />
+                        </th>
+                        <th>
+                            Category
+                            <select class="form-control small-size" name="FilterCategory" id="FilterCategory" ng-model="model.filterCategory"
+                                    ng-options="opt.id as opt.name for opt in productcategories" ng-change="updateCurrentDispensary()">
+                                <option value=""></option>
+                            </select>
+                        </th>
+                        <th>Description</th>
+                        <th></th>
+                    </tr>
+                </thead>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/ng-template" id="editInventory.html">
+    <form class="form panel-body clearfix" ng-submit="updateProduct(inventory);" name="updateProductForm_" id="updateProductForm_" novalidate>
+        <div class="form-group panel-body">
+            <div class="form-group">
+                <h3>Product Details</h3>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Product Name</label>
+
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Name" ng-model="inventory.name" name="ProductName" />
+                    <p ng-if="this['updateProductForm_'].$submitted && this['updateProductForm_'].ProductName.$error.required"
+                        class="text-danger">Product Name is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="Category">Category</label>
+                    <select class="form-control" name="Category" id="Category" ng-disabled="step1done" ng-model="inventory.productCategoryId"
+                            ng-options="opt.id as opt.name for opt in productcategories"></select>
+                </div>
+                <div class="form-group col-sm-4">
+
+                    <label for="Slug">Slug</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Slug" ng-model="inventory.slug" name="Slug" />
+                    <p ng-if="this['updateProductForm_'].$submitted && this['updateProductForm_'].Slug.$error.required"
+                        class="text-danger">Slug is required.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Effects</label>
+                    <div isteven-multi-select
+                            input-model="inventory.effectsList"
+                            output-model="inventory.selectedEffects"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked">
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Symptoms</label>
+                    <div isteven-multi-select
+                            input-model="inventory.symptomsList"
+                            output-model="inventory.selectedSymptoms"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked">
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="YouTubeVideoUrl">YouTube Video Url</label>
+                    <input type="text" value="" class="form-control"
+                            placeholder="YouTube Video Url" ng-model="inventory.youTubeVideoUrl" name="YouTubeVideoUrl" id="YouTubeVideoUrl" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea rows="4" type="text" value="" ng-required="true" ng-model="inventory.description" name="Description"
+                            class="form-control" placeholder="Description" name="DispensaryDescription"></textarea>
+                <p ng-if="this['updateProductForm_'].$submitted && this['updateProductForm_'].Description.$error.required"
+                    class="text-danger">Description is required.</p>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel-body">
+                        <h3>Product Pricing</h3>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <b>Weight/Units</b>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <b>Price </b>
+                            </div>
+                        </div>
+                        <div ng-repeat="price in inventory.masterVariant.variantPricing" class="row">
+                            <div class="form-group col-sm-4">
+                                <span ng-if="inventory.masterVariant.isPricedByWeight">Weight:</span>
+                                <span ng-if="!inventory.masterVariant.isPricedByWeight">Quantity:</span> {{price.weight}}
+                            </div>
+                            <div class="form-group col-sm-4">
+                                Price : {{price.price}}
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <button type="button" class="btn btn-danger btn-sm" ng-click="removePriceEdit(inventory, $index)">Remove</button>
+                            </div>
+                        </div>
+                        <p ng-if="inventory.masterVariant.variantPricing == null || inventory.masterVariant.variantPricing.length == 0 ">
+                            There are no prices for this product.
+                        </p>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <input type="text" class="input-sm" ng-if="!inventory.masterVariant.isPricedByWeight" ng-model="inventory.masterVariant.weight" placeholder="0.0" name="Weight" />
+                                <select class="form-control input-sm" ng-if="inventory.masterVariant.isPricedByWeight" ng-model="inventory.masterVariant.weight" ng-options="opt.Value as opt.Weight for opt in WeightOptions"></select>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <input type="text" class="form-control input-sm" ng-model="inventory.masterVariant.addprice" placeholder="0.00" name="Price" />
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <button type="button" class="btn btn-primary btn-sm" ng-click="addPricingEdit(inventory)">Add Price</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="panel-body">
+                        <h3>Product Photos</h3>
+                        <div class="row">
+                            <div class="form-group col-sm-6" ng-if="inventory.masterVariant.photos == null || inventory.masterVariant.photos.length == 0 ">
+                                There are no photos for this product.
+                            </div>
+                            <div class="form-group product-item" ng-repeat="photo in inventory.masterVariant.photos">
+                                <img class="img-responsive" ng-src="{{photo.url}}" />
+                                <a class="btn btn-danger" ng-click="DeleteImage($index, inventory);">Remove</a>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-3">
+                                <div name="ProductPhoto" class="btn btn-success" ng-model="productphoto" ngf-select="UploadProductPhoto($file, inventory)">Upload Product Photo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-center bottom-btn-area">
+                <button class="btn btn-success btn-lg " type="submit">Update Product</button>
+                <button class="btn btn-danger btn-lg " type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+</script>
+
+
+
+<script type="text/ng-template" id="createInventory.html">
+    <form class="form panel-body" ng-submit="addProduct(inventory)" name="createProductForm_" id="createProductForm_" novalidate>
+        <div class="form-group panel-body">
+            <h3>Create Details</h3>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <h4>
+                        Add Product To
+                    </h4>
+                    <select class="form-control" name="DispensarySelect" ng-model="inventory.DispensaryId" ng-change="updateCurrentDispensary()"
+                            ng-options="opt.id as opt.name for opt in dispensaries"></select>
+                    <p ng-if="this['createProductForm_'].$submitted && !inventory.DispensaryId"
+                       class="text-danger">Dispensary is required.</p>
+
+
+                </div>
+                <div class="form-group  col-xs-12 col-sm-4">
+                    <h4>
+                        In Product Category
+                    </h4>
+                    <select class="form-control" name="Category" id="Category" ng-disabled="step1done" ng-model="inventory.CategoryId"
+                            ng-options="opt.id as opt.name for opt in productcategories" ng-change="GetProducts()"></select>
+                </div>
+                <div class="form-group col-sm-4">
+                    <h4>Master Product List</h4>
+                    <select class="form-control" name="ProductSelect" ng-disabled="step1done" ng-model="inventory.ProductId" ng-change="populateDispensaryProductForm()"
+                            ng-options="opt.id as opt.name for opt in products"></select>
+                </div>
+            </div>
+            <h3>Product Information</h3>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Product Name</label>
+
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Name" ng-model="inventory.name" name="ProductName" />
+                    <p ng-if="this['createProductForm_'].$submitted && this['createProductForm_'].ProductName.$error.required"
+                       class="text-danger">Product Name is required.</p>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="Category">Category</label>
+                    <select class="form-control" name="Category" id="Category" ng-disabled="step1done" ng-model="inventory.productCategoryId"
+                            ng-options="opt.id as opt.name for opt in productcategories"></select>
+                    <p ng-if="this['createProductForm_'].$submitted && (this['createProductForm_'].Category.$error.required || !inventory.productCategoryId)"
+                       class="text-danger">Category is required.</p>
+
+                </div>
+                <div class="form-group col-sm-4">
+
+                    <label for="Slug">Slug</label>
+                    <input type="text" value="" class="form-control" ng-required="true"
+                            placeholder="Slug" ng-model="inventory.slug" name="Slug" />
+                    <p ng-if="this['createProductForm_'].$submitted && this['createProductForm_'].Slug.$error.required"
+                       class="text-danger">Slug is required.</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Effects</label>
+                    <div isteven-multi-select
+                            input-model="inventory.effectsList"
+                            output-model="inventory.selectedEffects"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked">
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="ProductName">Symptoms</label>
+                    <div isteven-multi-select
+                            input-model="inventory.symptomsList"
+                            output-model="inventory.selectedSymptoms"
+                            button-label="icon name"
+                            item-label="icon name maker"
+                            tick-property="ticked">
+                    </div>
+                </div>
+                <div class="form-group col-sm-4">
+                    <label for="YouTubeVideoUrl">YouTube Video Url</label>
+                    <input type="text" value="" class="form-control"
+                            placeholder="YouTube Video Url" ng-model="inventory.youTubeVideoUrl" name="YouTubeVideoUrl" id="YouTubeVideoUrl" />
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="Description">Description</label>
+                <textarea rows="4" type="text" value="" ng-required="true" ng-model="inventory.description" name="Description"
+                            class="form-control" placeholder="Description" name="DispensaryDescription"></textarea>
+                <p ng-if="this['createProductForm_'].$submitted && this['createProductForm_'].Description.$error.required"
+                   class="text-danger">Description is required.</p>
+
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="row">
+                <div class="col-sm-6">
+                    <div class="panel-body">
+                        <h3>Product Pricing</h3>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <b>Weight/Units</b>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <b>Price </b>
+                            </div>
+                        </div>
+                        <div ng-repeat="price in inventory.masterVariant.variantPricing" class="row">
+                            <div class="form-group col-sm-4">
+                                <span ng-if="inventory.masterVariant.isPricedByWeight">Weight:</span>
+                                <span ng-if="!inventory.masterVariant.isPricedByWeight">Quantity:</span> {{price.weight}}
+                            </div>
+                            <div class="form-group col-sm-4">
+                                Price : {{price.price}}
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <button type="button" class="btn btn-danger btn-sm" ng-click="removePriceEdit(inventory, $index)">Remove</button>
+                            </div>
+                        </div>
+                        <p ng-if="inventory.masterVariant.variantPricing == null || inventory.masterVariant.variantPricing.length == 0 ">
+                            There are no prices for this product.
+                        </p>
+                        <div class="row">
+                            <div class="form-group col-sm-4">
+                                <input type="text" ng-if="!inventory.masterVariant.isPricedByWeight" ng-model="inventory.masterVariant.weight" class="form-control" placeholder="0.0" name="Weight" />
+                                <select class="form-control" ng-if="inventory.masterVariant.isPricedByWeight" ng-model="inventory.masterVariant.weight" ng-options="opt.Value as opt.Weight for opt in WeightOptions"></select>
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <input type="text" class="form-control" ng-model="inventory.masterVariant.addprice" placeholder="0.00" name="Price" />
+                            </div>
+                            <div class="form-group col-sm-4">
+                                <button type="button" class="btn btn-primary" ng-click="addPricingEdit(inventory)">Add Price</button>
+                            </div>
+                        </div>
+                        <p ng-if="this['createProductForm_'].$submitted && (inventory.masterVariant.variantPricing == null || inventory.masterVariant.variantPricing.length == 0)"
+                           class="text-danger">Product Pricing is required.</p>
+
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <div class="panel-body">
+                        <h3>Product Photos</h3>
+                        <div class="row">
+                            <div class="form-group col-sm-6" ng-if="inventory.masterVariant.photos == null || inventory.masterVariant.photos.length == 0 ">
+                                There are no photos for this product.
+                            </div>
+                            <div class="form-group product-item" ng-repeat="photo in inventory.masterVariant.photos">
+                                <img class="img-responsive" ng-src="{{photo.url}}" />
+                                <a class="btn btn-danger" ng-click="DeleteImage($index, inventory)">Remove</a>
+                            </div>
+                            <div class="form-group col-xs-12 col-sm-3">
+                                <div name="ProductPhoto" class="btn btn-success" ng-model="productphoto" ngf-select="UploadProductPhoto($file, inventory)">Upload Product Photo</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="text-center bottom-btn-area">
+                <button class="btn btn-success btn-lg " type="submit">Create Product</button>
+                <button class="btn btn-danger btn-lg " type="button" ng-click="cancel()">Cancel</button>
+            </div>
+        </div>
+    </form>
+
+</script>

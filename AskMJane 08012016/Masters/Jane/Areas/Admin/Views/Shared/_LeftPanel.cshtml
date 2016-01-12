@@ -1,0 +1,45 @@
+﻿<nav class="navbar-default navbar-static-side" role="navigation">
+    <div class="sidebar-collapse">
+        <ul class="nav metismenu" id="side-menu">
+            <li class="text-right clearfix">
+                <a class="navbar-brand" href="/">Jane <span>Admin</span></a>
+            </li>
+            <li class="nav-header">
+                <div class="dropdown profile-element">
+                    <span>
+                        <img src="~/Content/img/avatars/sunny.png" alt="me" class="img-circle" />
+                    </span>
+                    <a data-toggle="dropdown" class="dropdown-toggle" href="javascript:void(0);" id="show-shortcut" data-action="toggleShortcut">
+                        <span class="clear">
+                            <span class="block m-t-xs">
+                                <strong class="font-bold">@User.Identity.Name</strong>
+                            </span>
+                        </span>
+                    </a>
+                </div>
+            </li>
+            <li id="admin"><a href="/Admin"><i class="fa fa-user"></i><span class="nav-label">Admin</span></a></li>
+            <li id="Dispensaries"><a href="/Admin/Dispensaries"><i class="fa fa-user"></i><span class="nav-label">Dispensaries</span></a></li>
+            <li id="Inventory"><a href="/Admin/Inventory"><i class="fa fa-user"></i><span class="nav-label">Inventory</span></a></li>
+            <li id="MasterProduct"><a href="/Admin/MasterProduct"><i class="fa fa-user"></i><span class="nav-label">Master Products</span></a></li>
+            <li id="Orders"><a href="/Admin/Orders"><i class="fa fa-user"></i><span class="nav-label">Orders</span></a></li>
+            <li id="Deliveries"><a href="/Admin/Deliveries"><i class="fa fa-user"></i><span class="nav-label">Deliveries</span></a></li>
+            <li id="PatientApprovals"><a href="/Admin/PatientApprovals"><i class="fa fa-user"></i><span class="nav-label">Patient Center</span></a></li>
+            <li id="RolesManager"><a href="/Admin/RolesManager"><i class="fa fa-user"></i><span class="nav-label">Roles Manager</span></a></li>
+            <li id="PendingDispensaries"><a href="/Admin/PendingDispensaries"><i class="fa fa-user"></i><span class="nav-label">Pending dispensaries</span></a></li>
+        </ul>
+
+    </div>
+</nav>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        @if (ViewBag.CurrentPage != null){
+        <text>
+            $("#@ViewBag.CurrentPage").addClass('active');
+
+            $("#@ViewBag.CurrentPage" + " > ul").css("display", "block");
+        </text>
+        }
+    });
+</script>

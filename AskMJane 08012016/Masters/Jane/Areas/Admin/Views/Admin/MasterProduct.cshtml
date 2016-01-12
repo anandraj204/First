@@ -1,0 +1,236 @@
+﻿@using Newtonsoft.Json
+@{
+    ViewBag.Title = "Master Products";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="row wrapper border-bottom white-bg page-heading">
+    <div class="col-xs-12">
+        <h2>Master Products</h2>
+    </div>
+</div>
+<div id="InventoryCtrl" ng-controller="MasterProductCtrl" class="wrapper wrapper-content">
+    <div class="tabs-container">
+        <tabset>
+            <tab active="true" heading="Manage Products">
+                <div class="panel-body">
+                    <div ng-hide="dispensaryProducts.length == 0 || loading">
+                        <table class="table table-striped table-inventory table-inventory-fix">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Description</th>
+                                    <th><input type="text" placeholder="Search..." ng-model="searchText" /></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr ng-repeat="p in dispensaryProducts | orderBy: 'p.name'|filter:searchText ">
+                                    @*<td colspan="4">
+                                        <table>
+                                            <tr>*@
+                                                <td>{{p.name}}</td>
+                                                <td>{{p.productCategory.name}}</td>
+                                                <td>
+                                                    <p class="product-description">{{p.description}}</p>
+                                                </td>
+                                                <td>
+                                                    <div class="dropdown">
+                                                        <button id="masterProductButton" class="btn btn-info" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                            Actions
+                                                            <span class="caret"></span>
+                                                        </button>
+                                                        <ul class="dropdown-menu" aria-labelledby="masterProductButton">
+                                                            <li>
+                                                                <a ng-click="removeProduct($index)">Remove</a>
+                                                            </li>
+                                                            <li>
+                                                                <a ng-click="edit($index)">Edit</a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                @*</td>
+                                            </tr>
+                                        </table>*@
+                                        <form collapse="IsCollapsed($index)" name="updateProductForm_{{$index}}" id="updateProductForm_{{$index}}"
+                                              class="form panel-body clearfix" ng-submit="updateProduct(p,$index)" novalidate>
+                                            <div class="form-group panel-body">
+                                                <div class="form-group">
+                                                    <h3>Product Details</h3>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="ProductName">Product Name</label>
+
+                                                        <input type="text" value="" class="form-control" ng-required="true"
+                                                               placeholder="Name" ng-model="p.name" name="ProductName" />
+                                                        <p ng-if="this['updateProductForm_' + $index].$submitted && this['updateProductForm_' + $index].ProductName.$error.required"
+                                                           class="text-danger">Product Name is required.</p>
+                                                    </div>
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="Category{{$index}}">Category</label>
+                                                        <select class="form-control" name="Category{{$index}}" id="Category{{$index}}" ng-disabled="step1done" ng-model="p.productCategoryId"
+                                                                ng-options="opt.id as opt.name for opt in productcategories"></select>
+                                                    </div>
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="Slug">Slug</label>
+                                                        <input type="text" value="" class="form-control" ng-required="true"
+                                                               placeholder="Slug" ng-model="p.slug" name="Slug" />
+                                                        <p ng-if="this['updateProductForm_' + $index].$submitted && this['updateProductForm_' + $index].Slug.$error.required"
+                                                           class="text-danger">Slug is required.</p>
+                                                    </div>
+                                                </div>
+                                                <div class="row">
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="ProductName">Effects</label>
+                                                        <div isteven-multi-select
+                                                             input-model="p.effectsList"
+                                                             output-model="p.selectedEffects"
+                                                             button-label="icon name"
+                                                             item-label="icon name maker"
+                                                             tick-property="ticked">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="ProductName">Symptoms</label>
+                                                        <div isteven-multi-select
+                                                             input-model="p.symptomsList"
+                                                             output-model="p.selectedSymptoms"
+                                                             button-label="icon name"
+                                                             item-label="icon name maker"
+                                                             tick-property="ticked">
+                                                        </div>
+                                                    </div>
+                                                    <div class="form-group col-sm-4">
+                                                        <label for="YouTubeVideoUrl">YouTube Video Url</label>
+                                                        <input type="text" value="" class="form-control"
+                                                               placeholder="YouTube Video Url" ng-model="p.youTubeVideoUrl" name="YouTubeVideoUrl" id="YouTubeVideoUrl" />
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="Description">Description</label>
+                                                    <textarea rows="4" type="text" value="" ng-required="true" ng-model="p.description" name="Description"
+                                                              class="form-control" placeholder="Description" name="DispensaryDescription"></textarea>
+                                                    <p ng-if="this['updateProductForm_' + $index].$submitted && this['updateProductForm_' + $index].Description.$error.required"
+                                                       class="text-danger">Description is required.</p>
+
+                                                </div>
+                                            </div>
+                                            <div class="form-group panel-body">
+                                                <h3>Product Photos</h3>
+                                                <div class="row">
+                                                    <div class="form-group col-xs-2" ng-if="p.photos == null || p.photos.length == 0 ">
+                                                        There are no photos for this product.
+                                                    </div>
+                                                    <div class="form-group product-item" ng-repeat="photo in p.photos">
+                                                        <img class="img-responsive" ng-src="{{photo.url}}" />
+                                                        <button class="btn btn-danger" ng-click="DeleteImage($index, p)">Remove</button>
+                                                    </div>
+                                                    <div class="form-group col-xs-12 col-sm-3">
+                                                        <div name="ProductPhoto" class="btn btn-success" ng-model="productphoto" ngf-select="UploadProductPhoto($file, p)">Upload Product Photo</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row">
+                                                <div class="text-center bottom-btn-area">
+                                                    <button class="btn btn-success btn-lg " type="submit"> Update Product</button>
+                                                    <button class="btn btn-danger btn-lg " type="button" ng-click="Collapse($index)">Cancel</button>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </tab>
+
+            <tab heading="Add Product">
+                <div class="panel-body">
+                    <form name="form" class="form" ng-submit="addProduct()" novalidate>
+                        <div class="form-group panel-body">
+                            <div class="form-group row">
+                                <div class="col-sm-4">
+                                    <h4>In Product Category</h4>
+                                    <select class="form-control" name="Category" id="Category" ng-disabled="step1done" ng-model="productModel.CategoryId"
+                                            ng-options="opt.id as opt.name for opt in productcategories" ng-change="GetProducts()"></select>
+                                </div>
+                            </div>
+                            <h3> Product Information</h3>
+                            <div class="row">
+                                <div class="form-group col-sm-4">
+                                    <label for="ProductName">Product Name</label>
+                                    <input type="text" value="" class="form-control" ng-required="true"
+                                            placeholder="Name" ng-model="productModel.Name" name="ProductName" id="ProductName" />
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="Slug">Slug</label>
+                                    <input type="text" value="" ng-model="productModel.Slug" ng-required="true" class="form-control" placeholder="Slug"
+                                            name="Slug" id="Slug" />
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <label for="YouTubeVideoUrl">YouTube Video Url</label>
+                                    <input type="text" value="" class="form-control" ng-required="true"
+                                            placeholder="YouTube Video Url" ng-model="productModel.YouTubeVideoUrl" name="YouTubeVideoUrl" id="YouTubeVideoUrl" />
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="form-group col-sm-6">
+                                    <label for="ProductName">Effects</label>
+                                    <div isteven-multi-select
+                                            input-model="effects"
+                                            output-model="productModel.effects"
+                                            button-label="icon name"
+                                            item-label="icon name maker"
+                                            tick-property="ticked">
+                                    </div>
+                                </div>
+                                <div class="form-group col-sm-6">
+                                    <label for="ProductName">Symptoms</label>
+                                    <div isteven-multi-select
+                                            input-model="symptoms"
+                                            output-model="productModel.symptoms"
+                                            button-label="icon name"
+                                            item-label="icon name maker"
+                                            tick-property="ticked">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="productDescription">Product Description:</label>
+                                <textarea rows="4" ng-change="" type="text" value="" ng-required="true"
+                                            ng-model="productModel.Description" class="form-control" placeholder="Additional Info"
+                                            name="productDescription" id="productDescription"></textarea>
+                            </div>
+                        </div>
+                        <div class="form-group panel-body">
+                            <h3>Product Photos</h3>
+                            <div class="row">
+                                <div class="form-group col-sm-2" ng-if="productModel.photos == null || productModel.photos.length == 0 ">
+                                    There are no photos for this product.
+                                </div>
+                                <div class="form-group product-item" ng-repeat="photo in productModel.photos">
+                                    <img class="img-responsive" ng-src="{{photo.url}}" />
+                                    <button class="btn btn-danger" ng-click="DeleteImage($index, productModel)">Remove</button>
+                                </div>
+                                <div class="form-group col-sm-4">
+                                    <div name="ProductPhoto" class="btn btn-success"
+                                            ng-model="productphoto" ngf-select="UploadProductPhoto($file, productModel)">Upload Product Photo</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="text-center bottom-btn-area">
+                            <button class="btn btn-success btn-lg" type="submit" ng-disabled="!productModel || !productModel.Name || !productModel.Slug || productModel.Description == '' || (productModel.Name === undefined) || (productModel.Description === undefined)">
+                                Add Product
+                            </button>
+                        </div>
+                    </form>
+
+                </div>
+            </tab>
+        </tabset>
+    </div>
+    <div ng-show="loading" class="loader">
+        <img src="/Content/images/loader.gif">
+    </div>
+</div>
